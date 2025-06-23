@@ -1,0 +1,1140 @@
+body {
+    background-image: url("/assets/bg.svg");
+    background-position: top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: initial;
+}
+
+@media (max-width: 600px) {
+    body {
+        background-image: url("/assets/bg.svg");
+    }
+}
+
+html body main {
+    max-width: 150rem;
+}
+
+html body nav .header {
+    max-width: 150rem;
+}
+
+
+
+main {
+    width: 100%;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
+main>* {
+    flex-shrink: 0;
+}
+
+main .live-batch-popup {
+    position: fixed;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    z-index: 112;
+    background-color: rgba(28, 28, 28, 0.467);
+}
+
+main .live-batch-popup .box {
+    background-image: url("https://ik.imagekit.io/cybershoora/Shoora.tech/Mask%20group_k6n-RlxAm.webp?updatedAt=1750021882045");
+    background-color: #f4f2ff;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 30rem;
+    height: 30rem;
+    padding: 4.5rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+main .live-batch-popup .box .cancel {
+    position: absolute;
+    top: 12px;
+    color: black;
+    right: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+main .live-batch-popup .box .gift-icon {
+    color: #ff1493;
+    font-size: 2rem;
+}
+
+main .live-batch-popup .box .content h1 {
+    color: black;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+main .live-batch-popup .box p {
+    font-size: 1.08rem;
+    color: #787878;
+}
+
+main .live-batch-popup .box h6 {
+    font-size: 0.8rem;
+    margin-top: 2.3rem;
+    font-weight: 500;
+    color: #787878;
+}
+
+main .live-batch-popup .box .parentDiv {
+    margin: auto;
+    width: -moz-fit-content;
+    width: fit-content;
+    position: relative;
+}
+
+main .live-batch-popup .box .parentDiv .copy {
+    position: absolute;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background-color: #000;
+    color: #fff;
+    padding: 6px 12px;
+    font-size: 0.85em;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    width: 10rem;
+    transition: 0.25s;
+    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+main .live-batch-popup .box .parentDiv .copy p {
+    color: white;
+}
+
+main .live-batch-popup .box .parentDiv .copy::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateY(28px) translateX(-50%) rotate(180deg);
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent var(--arrow-color, #000) transparent;
+    z-index: -1;
+    /* Push the arrow behind the coupon */
+}
+
+main .live-batch-popup .box .parentDiv:hover .copy {
+    top: -40%;
+    opacity: 1;
+}
+
+main .live-batch-popup .box .parentDiv:active .coupon {
+    scale: 0.95;
+}
+
+main .live-batch-popup .box .coupon {
+    background-color: #f4f2ff;
+    position: relative;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
+    font-size: 16px;
+    padding: 1.1rem 2.8rem;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin-top: 0.65rem;
+    height: 6rem;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2300000030' stroke-width='3' stroke-dasharray='10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    cursor: pointer;
+    transition: 0.1s;
+    z-index: 2;
+    /* Ensuring the coupon is above */
+    /* Popup Bubble */
+    /* Coupon Text */
+}
+
+main .live-batch-popup .box .coupon p {
+    font-size: 1.25rem;
+    color: rgb(134, 134, 134);
+    margin-bottom: 0.4rem;
+}
+
+main .live-batch-popup .box .coupon span {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: black;
+    letter-spacing: 4px;
+}
+
+main .live-batch-popup .box .redeem {
+    display: block;
+    margin: 3.2rem auto 0;
+    padding: 0.7rem 5rem;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 5px;
+    background-color: #24cfa6;
+    color: rgb(0, 0, 0);
+    border: none;
+    cursor: pointer;
+}
+
+#courseNameInput {
+
+    color: #000;
+}
+
+
+@media (max-width: 768px) {
+    main {
+        width: 100%;
+        padding: 0 1rem;
+    }
+
+    main .live-batch-popup .box {
+        border-radius: 2px;
+        width: 25rem;
+        height: 31rem;
+        background-size: cover;
+        background-image: url("https://ik.imagekit.io/sheryians/Mask%20group%20resp_s2KdS4zbc.png?updatedAt=1740909390709");
+        padding: 4.5rem 1rem;
+    }
+
+    main .live-batch-popup .box .content h1 {
+        font-size: 1.7rem;
+    }
+
+    main .live-batch-popup .box .content p {
+        font-size: 0.8rem;
+    }
+
+    main .live-batch-popup .box h6 {
+        margin-top: 2.7rem;
+    }
+
+    main .live-batch-popup .box .parentDiv .copy p {
+        color: white;
+        font-size: 1.3em;
+    }
+
+    main .live-batch-popup .box .parentDiv .copy::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateY(23px) translateX(-50%) rotate(180deg);
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent transparent var(--arrow-color, #000) transparent;
+        z-index: -1;
+        /* Push the arrow behind the coupon */
+    }
+
+    main .live-batch-popup .box .parentDiv .coupon {
+        height: 6rem;
+        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2300000030' stroke-width='2' stroke-dasharray='6' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    }
+
+    main .live-batch-popup .box .parentDiv .coupon p {
+        font-size: 1.3rem;
+        margin-bottom: 0;
+    }
+
+    main .live-batch-popup .box .parentDiv .coupon span {
+        letter-spacing: 2px;
+    }
+
+    main .live-batch-popup .box .redeem {
+        font-size: 1.3rem;
+    }
+}
+
+.view {
+    width: 100%;
+    min-height: 100vh;
+    padding: 6rem var(--main-horizontal-padding);
+}
+
+.wrap {
+  border-right: 0.08em solid #666;
+}
+
+@media (max-width: 600px) {
+    .view {
+        min-height: initial;
+    }
+}
+
+#view1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+}
+
+#view1 .middle {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 4rem;
+    font-size: clamp(10px, 1.2vw, 1rem);
+    position: relative;
+}
+
+#view1 .middle h1 {
+    line-height: 3rem;
+    font-size: 3rem;
+    font-weight: 300 !important;
+}
+
+#view1 .middle h1 span {
+    font-family: "NeueMachina";
+}
+
+#view1 .middle h1 .italic {
+    font-style: italic;
+    font-weight: 100;
+    font-family: "juana";
+}
+
+#view1 .middle .checkout {
+    font-size: 1.5em;
+}
+
+#view1 .middle .checkout:hover {
+    transform: translateY(-0.5em);
+    transition: transform 0.3s ease-in-out;
+}
+
+#view1 .middle .side-text {
+    font-size: 0.95em;
+    width: 14em;
+    text-align: left;
+    font-weight: 300;
+    line-height: 1.2em;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translate(80%, -60%);
+}
+
+#view1 .bottom {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+#view1 .bottom .mileStones {
+    padding-top: 1em;
+    display: flex;
+    font-size: 1.4em;
+    gap: 5.4em;
+}
+
+#view1 .bottom .mileStones .mileStone .text:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in;
+}
+
+#view1 .bottom .mileStones .mileStone {
+    text-align: center;
+}
+
+#view1 .bottom .mileStones .mileStone .text h1 {
+    font-size: 1.96em;
+}
+
+#view1 .bottom .mileStones .mileStone .text p {
+    font-size: 1em;
+    font-family: "NeueMachina";
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    #view1 .middle .side-text {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    #view1 {
+        padding-top: 10vh;
+        height: 85vh;
+    }
+
+    #view1 .middle {
+        font-size: 0.75rem;
+    }
+
+    #view1 .middle h1 br {
+        display: none;
+    }
+
+    #view1 .middle .checkout {
+        font-size: 2.2em;
+    }
+
+    #view1 .bottom .mileStones {
+        gap: 3em;
+    }
+
+    #view1 .bottom .mileStones .mileStone {
+        font-size: 1rem;
+    }
+}
+
+#view2 {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 4rem;
+    justify-content: space-around;
+}
+
+#view2 .top {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+#view2 .top span {
+    text-align: center;
+    font-family: "NeueMachina";
+    font-weight: 400;
+    line-height: 1.02em;
+    font-size: 3rem;
+    width: 100%;
+}
+
+#view2 .middle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#view2 .middle .video-container {
+    aspect-ratio: 16/9;
+    position: relative;
+    max-width: 68rem;
+    border-radius: 1.7rem;
+    overflow: hidden;
+    width: 100%;
+    border: none;
+}
+
+#view2 .middle .video-container img,
+#view2 .middle .video-container iframe {
+    height: 100%;
+    width: 100%;
+}
+
+
+#view2 .middle .video-container .play-pause {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    cursor: pointer;
+}
+
+#view2 .middle .video-container .play-pause i {
+    font-size: 4em;
+    aspect-ratio: 1/1;
+    display: flex;
+    padding: 0.9em;
+    outline: solid 0.05em var(--white);
+    border-radius: 50%;
+    color: var(--white);
+}
+
+#view2 .middle .video-container .play-pause i::before {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    margin-left: 0.08em;
+}
+
+#view2 .bottom {
+    display: flex;
+    justify-content: center;
+}
+
+#view2 .bottom .btn {
+    font-size: 1.5rem;
+}
+
+.homebuttons {
+    display: flex;
+    flex-wrap: wrap;
+    /* allow wrapping on small screens */
+    gap: 2rem;
+    /* 2rem gap between items (both horizontal/vertical if wrapped) */
+    justify-content: center;
+    /* center align buttons */
+}
+
+.homebuttons a {
+    display: inline-block;
+    text-align: center;
+    min-width: 200px;
+    
+}
+
+.homebuttons a:nth-of-type(2) {
+    animation: wiggle 3s ease-in-out infinite;
+}
+
+.menu-items a:nth-of-type(3) {
+    animation: wiggle 2s ease-in-out infinite;
+    
+}
+
+/* Optional: Make it full width on very small screens */
+
+
+#view2 .bottom .btn:hover {
+    transform: translateY(-0.5em);
+    transition: transform 0.3s ease-in;
+}
+
+@media (max-width: 600px) {
+    #view2 .top span {
+        font-size: 1.75rem;
+    }
+
+    #view2 .top span br {
+        display: none;
+    }
+
+    #view2 .middle .video-container {
+        border-radius: 0.5rem;
+    }
+
+    #view2 .bottom .btn {
+        font-size: 1.5rem;
+    }
+}
+
+#view3 {
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 6rem;
+}
+
+#view3 .top h1 {
+    font-size: 3em;
+    font-weight: 300;
+}
+
+
+
+#view3 .top h1 span {
+    font-family: "neueMachina";
+}
+
+#view3 .bottom .courses {
+    display: grid;
+    gap: 2rem;
+    row-gap: 7rem;
+    flex-wrap: wrap;
+    grid-template-columns: repeat(auto-fill, minmax(23rem, 1fr));
+}
+
+#view3 .bottom .courses .course-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex: 1 0 25rem;
+    transition: transform 0.7s ease-in;
+}
+
+#view3 .bottom .courses .course-wrapper:hover {
+    transform: translateY(-2rem);
+    transition: transform 0.3s ease-in;
+}
+
+#view3 .bottom .courses .course-wrapper .combo {
+    z-index: 3;
+    right: 0;
+    overflow: hidden;
+    width: 10rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10rem;
+    pointer-events: none;
+    position: absolute;
+}
+
+#view3 .bottom .courses .course-wrapper .combo span {
+    position: absolute;
+    text-align: center;
+    width: 20rem;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.1rem 0;
+    transform: rotate(45deg) translateY(-50px);
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 181, 48);
+}
+
+#view3 .bottom .courses .course-wrapper .course {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: -moz-fit-content;
+    width: fit-content;
+    --border-radius: 1rem;
+    --body-padding: 1.8rem;
+    --body-padding-vertical: 2rem;
+    width: 100%;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    background-color: var(--ui-element-secondary-color);
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-image {
+    aspect-ratio: 16/9;
+    border-radius: var(--border-radius);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-image img {
+    height: 100%;
+    width: 100%;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-image .sub-tags {
+    position: absolute;
+    top: 0.8em;
+    right: 0.75em;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-image .sub-tags .sub-tag {
+    background-color: var(--mercury);
+    color: var(--black);
+    padding: 0.4em 1.3em;
+    border-radius: 0.45em;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    font-weight: 800;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body {
+    flex: 1 0 auto;
+    padding: var(--body-padding-vertical) var(--body-padding);
+    padding-right: calc(var(--body-padding) - 0.2em);
+    border-radius: 0.8rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    flex-grow: 1;
+    letter-spacing: 0.02em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .top {
+    margin-bottom: 3rem;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .top h2 {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    font-size: 1.6em;
+    justify-content: left;
+    font-weight: 400;
+    margin-bottom: 0.7rem;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .top .tags {
+    display: flex;
+    gap: 1rem;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .top .tags .live {
+    color: white;
+    font-size: 1.1em;
+    width: -moz-fit-content;
+    width: fit-content;
+    border-radius: 4px;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    background-color: var(--error-color);
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .top .tags p {
+    font-size: 1.1em;
+    width: -moz-fit-content;
+    width: fit-content;
+    border-radius: 4px;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    background-color: var(--ui-element-color);
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .bottom .left span {
+    color: var(--accent-color);
+    font-size: 1.1rem;
+    font-weight: 300;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .bottom .left div {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .bottom .left div p {
+    font-size: 1.7rem;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .bottom .left div small {
+    font-size: 1.3rem;
+    text-decoration: line-through;
+    color: var(--boulder);
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .bottom .left div strong {
+    margin-left: -0.5rem;
+    font-weight: 400;
+    font-size: 1.2rem;
+}
+
+#view3 .bottom .courses .course-wrapper .course .course-body .bottom .right div {
+    margin-bottom: 0.5rem;
+    background-color: white;
+    color: black;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.7rem;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+#view3 .bottom .courses .course-wrapper.commingSoon .course-image {
+    position: relative;
+}
+
+#view3 .bottom .courses .course-wrapper.commingSoon .course-image::after {
+    content: "Coming soon";
+    background-color: rgba(24, 24, 24, 0.7);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--Wild-Sand);
+    font-size: 1.6em;
+    font-family: "NeueMachina";
+}
+
+#view3 .bottom .courses .course-wrapper .buy-now {
+    width: 100%;
+    font-size: 1.7rem;
+    font-weight: 600;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+}
+
+@media (max-width: 600px) {
+    #view3 {
+        padding: 6rem 0;
+        margin-top: 3rem;
+        gap: 2em;
+    }
+
+    #view3>* {
+        padding: 0 var(--main-horizontal-padding);
+    }
+
+    #view3 .top h1 {
+        font-size: 1.5rem;
+    }
+
+    #view3 .bottom {
+        padding: 0 0;
+    }
+
+    #view3 .bottom .courses {
+        padding: 0 var(--main-horizontal-padding);
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1rem;
+    }
+
+    #view3 .bottom .courses .course-wrapper {
+        flex: 0 0 89%;
+        scroll-snap-align: center;
+    }
+
+    #view3 .bottom .courses .course-wrapper .course {
+        font-size: 1.1rem;
+    }
+
+    #view3 .bottom .courses .course-wrapper .course .course-body h2 {
+        font-size: 1.4em;
+    }
+
+    #view3 .bottom .courses .course-wrapper .course .course-body p {
+        font-size: 1em;
+    }
+
+    #view3 .bottom .courses .course-wrapper .course .course-body-tags .tags .tag {
+        font-size: 1em;
+    }
+
+    #view3 .bottom .courses .course-wrapper .course .course-instructor {
+        padding: 1em;
+        margin-bottom: 2em;
+    }
+
+    #view3 .bottom .courses .course-wrapper .course .course-instructor p {
+        font-size: 0.9em;
+    }
+
+    #view3 .bottom .courses .course-wrapper .course .course-instructor span {
+        font-size: 1.3em;
+    }
+
+    #view3 .bottom .courses .course-wrapper .buy-now {
+        padding-top: 0.6em;
+        padding-bottom: 0.6em;
+        font-size: 1.4em;
+    }
+}
+
+#view4 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    margin-top: 6rem;
+}
+
+#view4 img {
+    width: 80%;
+}
+
+#view4 .top {
+    display: flex;
+    justify-content: center;
+}
+
+#view4 .top h1 {
+    text-align: center;
+    max-width: 53rem;
+}
+
+#view4 .top h1 span {
+    font-size: 3.25rem;
+    font-family: "NeueMachina";
+    font-weight: 300;
+    line-height: 1.05em;
+}
+
+#view4 .middle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 45vh;
+}
+
+#view4 .middle .companies {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    gap: 2rem;
+}
+
+#view4 .middle .companies .upper,
+#view4 .middle .companies .lower {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+#view4 .middle .companies .upper .companie,
+#view4 .middle .companies .lower .companie {
+    width: 17%;
+    max-width: 10rem;
+    aspect-ratio: 1/1;
+}
+
+#view4 .middle .companies .upper .companie img,
+#view4 .middle .companies .lower .companie img {
+    width: 100%;
+    height: 100%;
+    -o-object-fit: contain;
+    object-fit: contain;
+}
+
+#view4 .bottom {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+#view4 .bottom .btn {
+    font-size: 1.7rem;
+}
+
+#view4 .bottom .btn:hover {
+    transform: translateY(-0.5em);
+    transition: transform 0.3s ease-in;
+}
+
+@media (max-width: 600px) {
+    #view4 {
+        gap: 4rem;
+        margin: 0;
+        margin-top: 5rem;
+    }
+
+    #view4 .top h1 span {
+        font-size: 2.4rem;
+    }
+
+    #view4 .middle .companies {
+        gap: 1rem;
+    }
+
+    #view4 .middle .companies>* {
+        gap: 1rem;
+    }
+
+    #view4 .middle .companies .companie {
+        max-width: 6rem;
+    }
+
+    #view4 .bottom .btn {
+        display: none;
+    }
+}
+
+#view5 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6rem;
+}
+
+#view5 .top {
+    padding-top: 4em;
+    width: 40%;
+}
+
+#view5 .top .mobile-view {
+    display: none;
+}
+
+#view5 .top h1 {
+    font-size: 3.35em;
+    font-weight: 300;
+    line-height: 1.1em;
+    font-family: "NeueMachina";
+    margin-bottom: 0.9em;
+}
+
+#view5 .top p {
+    font-size: 1.4em;
+    font-weight: 500;
+    line-height: 1.5em;
+}
+
+#view5 .top p span {
+    font-size: 1.1em;
+    color: var(--boulder);
+}
+
+#view5 .top p .text-highlight {
+    font-size: 1.3em;
+    line-height: 1em;
+    color: var(--accent-color);
+    font-family: "NeueMachina";
+    font-weight: 300;
+}
+
+#view5 .bottom {
+    width: 60%;
+    padding: 0 2rem;
+    padding-right: 4rem;
+}
+
+#view5 .bottom hr {
+    border: 0.5px solid var(--boulder);
+    opacity: 0.3;
+    margin: 2em 0;
+}
+
+#view5 .bottom hr:nth-last-child(1) {
+    opacity: 0;
+}
+
+#view5 .bottom .accordian label {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    cursor: pointer;
+    gap: 1rem;
+}
+
+#view5 .bottom .accordian label .left span {
+    font-size: 1.4em;
+}
+
+#view5 .bottom .accordian label i {
+    font-size: 1.5em;
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+}
+
+#view5 .bottom .accordian:has(input:checked) label i {
+    transform: rotate(180deg);
+}
+
+#view5 .bottom .accordian:has(input:checked) .content {
+    grid-template-rows: 1fr;
+}
+
+#view5 .bottom .accordian:has(input:checked) .content .accordian-content {
+    padding-top: 2em;
+}
+
+#view5 .bottom .accordian .content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: all 0.3s ease-in-out;
+}
+
+#view5 .bottom .accordian .content * {
+    transition: all 0.3s ease-in-out;
+}
+
+#view5 .bottom .accordian .content .accordian-content {
+    overflow: hidden;
+}
+
+#view5 .bottom .accordian .content .accordian-content p {
+    font-size: 1.05em;
+    font-weight: 400;
+    line-height: 1.5em;
+    color: var(--boulder);
+}
+
+@media (max-width: 768px) {
+    #view5 {
+        margin-top: 0;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 2rem;
+    }
+
+    #view5 .top .mobile-view {
+        display: block;
+        font-size: 2rem;
+    }
+
+    #view5 .top *:has(:not(.mobile-view)) {
+        display: none;
+    }
+
+    #view5 .bottom {
+        font-size: 1rem;
+        padding: 0;
+    }
+
+    #view5>* {
+        width: 100% !important;
+    }
+}
+
+[data-theme=light] #view3 .bottom .courses .course-wrapper .course .course-image .sub-tags .sub-tag {
+    background-color: var(--cod-gray);
+    color: var(--text-color);
+}
+
+[data-theme=light] #view3 .bottom .courses .course-wrapper .course .course-body-tags .devider {
+    background-color: var(--Silver-Chalice);
+}
+
+.wiggle {
+    color: #ff6a32;
+    display: inline-block;
+    animation: wiggle 2s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+    0% {
+        transform: translateX(0);
+    }
+
+    10% {
+        transform: translateX(-7px);
+    }
+
+    20% {
+        transform: translateX(7px);
+    }
+
+    30% {
+        transform: translateX(-4px);
+    }
+
+    40% {
+        transform: translateX(4px);
+    }
+
+    50% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/*# sourceMappingURL=index.css.map */

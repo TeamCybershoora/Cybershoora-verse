@@ -1,0 +1,7 @@
+/* styles/globals.css */
+body {
+  background-image: url('/assets/bg.svg');
+  background-position: top;
+  background-size: cover;
+  background-repeat: no-repeat;
+}

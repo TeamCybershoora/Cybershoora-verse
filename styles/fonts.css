@@ -1,0 +1,410 @@
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-medium_WrymeW95W.ttf?updatedAt=1713302126248") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-extralight__KHggd4aZ.ttf?updatedAt=1713302127923") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-regularit_AeweXTWiS.ttf?updatedAt=1713302129061") format("truetype");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juanaalt-semibold_AnJ7g--aJ.ttf?updatedAt=1713302125874") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-black_qsRZ2yEB9.ttf?updatedAt=1713302122342") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-mediumit_kwYDtLOMs.ttf?updatedAt=1713302125102") format("truetype");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-bold_kpaGmQ4v_v.ttf?updatedAt=1713302125581") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-boldit_f6REbZK2g.ttf?updatedAt=1713302127856") format("truetype");
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-blackit_WeBJaLKA8-.ttf?updatedAt=1713302122300") format("truetype");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-regular_mHnKLu9dd0.ttf?updatedAt=1713302122279") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-lightit_vzJK35d3aE.ttf?updatedAt=1713302122327") format("truetype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-extralightit_toKzXEsfr.ttf?updatedAt=1713302125832") format("truetype");
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-light_ivMEPQBZu.ttf?updatedAt=1713302125097") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juanaalt-bold_prHhz92hiS.ttf?updatedAt=1713302122252") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-thin_lHX4jBZFvC.ttf?updatedAt=1713302125648") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-semiboldit_yfAC9hSzSh.ttf?updatedAt=1713302122272") format("truetype");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juanaalt-medium_L_cpau2EfA.ttf?updatedAt=1713302125668") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juanaalt-black_5k8c_h_Qxj.ttf?updatedAt=1713302122360") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juanaalt-thin_8GEkbrwkLn.ttf?updatedAt=1713302122425") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juanaalt-regular_33psZw8SQ.ttf?updatedAt=1713302122284") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juanaalt-extralight_fokPbOsQ9.ttf?updatedAt=1713302125081") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juana";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juanaalt-light_vjpuCX47rI.ttf?updatedAt=1713302125611") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 
+https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Regular_DQCmjH1st.ttf?updatedAt=1713347905052
+https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Ultrabold_jtJhX5ZopX.ttf?updatedAt=1713347905005
+https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Black_Jq-BOUQTx.ttf?updatedAt=1713347905045
+https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Ultralight_L18yrR2IlK.ttf?updatedAt=1713347905074
+https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Light_gwWCZxVuQl.ttf?updatedAt=1713347904991
+https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Medium_d0jNuroW9.ttf?updatedAt=1713347904973
+https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Bold_WaMOsLX9Z9.ttf?updatedAt=1713347904936
+
+*/
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Regular_DQCmjH1st.ttf?updatedAt=1713347905052") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Ultrabold_jtJhX5ZopX.ttf?updatedAt=1713347905005") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Black_Jq-BOUQTx.ttf?updatedAt=1713347905045") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Ultralight_L18yrR2IlK.ttf?updatedAt=1713347905074") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Light_gwWCZxVuQl.ttf?updatedAt=1713347904991") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Medium_d0jNuroW9.ttf?updatedAt=1713347904973") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Bold_WaMOsLX9Z9.ttf?updatedAt=1713347904936") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/SiteStaticFiles/Gilroy-Extrabold_YC6oQDa3Ix.ttf?updatedAt=1697720439904");
+  font-family: "Gilroy";
+  font-weight: 700;
+}
+
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/SiteStaticFiles/Gilroy-Bold_JK4cTGJOE.ttf?updatedAt=1697720175118");
+  font-family: "Gilroy";
+  font-weight: 600;
+}
+
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/SiteStaticFiles/Gilroy-Semibold_zTZ2PgJOF.ttf?updatedAt=1697720387357");
+  font-family: "Gilroy";
+  font-weight: 500;
+}
+
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/SiteStaticFiles/Gilroy-Medium_eHDK2RllDd.ttf?updatedAt=1697720216741");
+  font-family: "Gilroy";
+  font-weight: 400;
+}
+
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/SiteStaticFiles/Gilroy-UltraLight_GObAYY-eiQ.ttf?updatedAt=1710171746221");
+  font-family: "Gilroy";
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-Regular_5Mzhp8KlA8_CAVTbnsPOM.woff2?updatedAt=1714048137030");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-Thin_J0zaDW5kUV_cvf1ZCDypY.woff2?updatedAt=1714048137584");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-Light_M4nzWhve6k_k7HolyzL10.woff2?updatedAt=1714048137233");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-Medium_2wEhlmo-TD_wsqqEEwmJC.woff2?updatedAt=1714048136783");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-Bold_VMHV5twUMR_2SBNfxj1ry.woff2?updatedAt=1714048134442");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-Hairline_9Jz6JFa3S_u32EafJPG.woff2?updatedAt=1714048136620");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-LightIta_mLZfHYSDzL_zoX1nh7QCH.woff2?updatedAt=1714048137165");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-RegIta_ZQZ0ISuECo_Ebf0ebpNZw.woff2?updatedAt=1714048136741");
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-ThinIta__6kihetaOz_w4-Sx_LrF0.woff2?updatedAt=1714048137583");
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-MedIta_s4wTiA5al_YBtT5S80dg.woff2?updatedAt=1714048137131");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-HairlineI_KIzj8Plwv_0Olitr0Zj1.woff2?updatedAt=1714048136797");
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-ExtBlkIta_f0giU-O0Yd_sAomO0ePGQ.woff2?updatedAt=1714048134074");
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-BoldIta_O5gX7g1L5_EGb7W3WC7O.woff2?updatedAt=1714048134080");
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-Black_-pjI4fOp4E_mmKDOiFYb1.woff2?updatedAt=1714048134434");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-BlackIta_y1WeOftIb_moP1jEfkvM.woff2?updatedAt=1714048134096");
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-ExtBlk_yunH-AhU2b_d1mB8gCvOj.woff2?updatedAt=1714048133983");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-ExtLtIta_GJzq7onfxt_6WJ9e-RWZL.woff2?updatedAt=1714048134137");
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-ExtBdIta__MPkMs25CD_MEFsGC4G_T.woff2?updatedAt=1714048134073");
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-ExtraBold_Qqt_sGOvuc_Z0ZOJEQucI.woff2?updatedAt=1714048134441");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-ExtLt_R50yORjQ9_zDWWhh4hzv.woff2?updatedAt=1714048134072 ");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/Fonts/SourceCodePro-VariableFont_wght_6jNfJu5_qA.ttf?updatedAt=1731422147701");
+  font-family: "SourceCodePro";
+  font-weight: 400;
+}
