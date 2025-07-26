@@ -1,7 +1,7 @@
 "use client";
 import Navbar from '@/components/Navbar';
 import NewAdvertisementBanner from '@/components/NewAdvertisementBanner';
-import Footer from '@/components/footer';
+import Footer from '@/components/Footer';
 import { Toaster } from 'react-hot-toast';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
 import { usePathname } from 'next/navigation';
@@ -21,7 +21,7 @@ export default function LayoutShell({ children }) {
       {!hideNav && <NewAdvertisementBanner />}
       {!hideNav && <Navbar />}
       <Toaster position="top-right" toastOptions={{ style: { zIndex: 99999 } }} />
-      <main className="min-h-screen px-4 sm:px-10 py-6 main-content">
+      <main className="px-4 py-6 min-h-screen sm:px-10 main-content">
         {children}
       </main>
       {!hideNav && <Footer />}
