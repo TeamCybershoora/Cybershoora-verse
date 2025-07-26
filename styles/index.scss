@@ -1,0 +1,1201 @@
+
+
+body {
+    
+
+    height: initial;
+}
+
+html {
+    body {
+        main {
+            max-width: 150rem;
+        }
+
+        nav {
+            .header {
+                max-width: 150rem;
+            }
+        }
+    }
+}
+
+
+main {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+
+    & > * {
+        flex-shrink: 0;
+    } 
+    .live-batch-popup {
+        position: fixed;
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        z-index: 112;
+        background-color: rgba(28, 28, 28, 0.467);
+        
+        .box {
+            background-image: url('https://ik.imagekit.io/sheryians/Mask%20group_k6n-RlxAm.png?updatedAt=1740909390668');
+            background-color: #f4f2ff;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 30rem;
+            height: 30rem; 
+            padding: 4.5rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+    
+            .cancel {
+                position: absolute;
+                top: 12px;
+                color: black;
+                right: 16px;
+                font-size: 24px;
+                cursor: pointer;
+                z-index: 10;
+            }
+            
+            .gift-icon {
+                color: #ff1493;
+                font-size: 2rem;
+            }
+            
+            .content h1 {
+                color: black;
+                font-size: 1.8rem;
+                font-weight: 600;
+            }
+            
+            p {
+                font-size: 1.08rem;
+                color: #787878;
+            }
+            
+            h6 {
+                font-size: 0.8rem;
+                margin-top: 2.3rem;;
+                font-weight: 500;
+                color: #787878;
+            }
+            .parentDiv{
+                margin: auto;
+                width: fit-content;
+                position: relative;
+                .copy{
+                    position: absolute;
+                    top: -30%;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(-10px);
+                    background-color: #000;
+                    color: #fff;
+                    padding: 6px 12px;
+                    font-size: 0.85em;
+                    border-radius: 5px;
+                    white-space: nowrap;
+                    opacity: 0;
+                    width: 10rem;
+                    transition:0.25s;
+                    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+                    p{
+                        color: white;
+                    }
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        left: 50%;
+                        transform: translateY(28px) translateX(-50%) rotate(180deg);
+                        border-width: 6px;
+                        border-style: solid;
+                        border-color: transparent transparent var(--arrow-color, #000) transparent;
+                        z-index: -1; /* Push the arrow behind the coupon */
+                    }
+
+                }
+                
+                &:hover .copy {
+                    top:-40%;
+                    opacity: 1;  
+                }
+                &:active .coupon{
+                    scale: 0.95; 
+                }
+              
+            }
+            .coupon {
+                background-color: #f4f2ff;
+                position: relative;
+                border-radius: 2px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                margin: 0 auto;
+                font-size: 16px;
+                padding: 1.1rem 2.8rem;
+                width: fit-content;
+                margin-top: 0.65rem;
+                height: 6rem;
+                background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2300000030' stroke-width='3' stroke-dasharray='10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");  
+                cursor: pointer;
+                transition: 0.1s;
+                z-index: 2; /* Ensuring the coupon is above */
+            
+                /* Popup Bubble */
+                /* Coupon Text */
+                p {
+                    font-size: 1.25rem;
+                    color: rgb(134, 134, 134);
+                    margin-bottom: 0.4rem;
+                }
+                span {
+                    font-size: 1.3rem;
+                    font-weight: 600;
+                    color: black;
+                    letter-spacing: 4px;
+                }
+            }
+            
+            .redeem {
+                display: block;
+                margin: 3.2rem auto 0;
+                padding: 0.7rem 5rem;
+                font-size: 18px;
+                font-weight: 600;
+                border-radius: 5px;
+                background-color: #24cfa6;
+                color: rgb(0, 0, 0);
+                border: none;
+                cursor: pointer;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* Adjust breakpoint as needed */
+        .live-batch-popup {
+            .box{
+                border-radius: 2px;
+                width: 25rem;
+                height: 31rem;
+                background-size: cover;
+                background-image: url('https://ik.imagekit.io/sheryians/Mask%20group%20resp_s2KdS4zbc.png?updatedAt=1740909390709');
+                padding: 4.5rem 1rem;
+
+                .content {
+                    h1 {
+                        font-size: 1.7rem;
+                    }
+                    p{
+                        font-size: 0.8rem;
+                    }
+                }
+                h6{
+                    margin-top: 2.7rem;
+                }
+                .parentDiv{
+                    .copy{
+                        p{
+                            color: white;
+                            font-size: 1.3em;
+                        }
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            left: 50%;
+                            transform: translateY(23px) translateX(-50%) rotate(180deg);
+                            border-width: 6px;
+                            border-style: solid;
+                            border-color: transparent transparent var(--arrow-color, #000) transparent;
+                            z-index: -1; /* Push the arrow behind the coupon */
+                        }
+    
+                    }
+                    .coupon{
+                        height: 6rem;
+                        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%2300000030' stroke-width='2' stroke-dasharray='6' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");  
+                        p{
+                            font-size: 1.3rem;
+                            margin-bottom: 0;
+                        }
+                        span{
+                            letter-spacing: 2px;
+                        }
+                    }
+                }
+                .redeem{
+                    font-size: 1.3rem;
+                }
+
+            }
+        }
+    }
+}
+
+.view {
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 6rem var(--main-horizontal-padding);
+
+    @media (max-width: 600px) {
+        min-height: initial;
+    }
+}
+
+#view1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+
+    .middle {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        gap: 4rem;
+        font-size: clamp(10px, 1.2vw, 1rem);
+        position: relative;
+
+        h1 {
+            line-height: 0.845em;
+            font-size: 5.7em;
+            font-weight: 300 !important;
+
+            span {
+                font-family: "NeueMachina";
+            }
+
+            .italic {
+                font-style: italic;
+                font-weight: 100;
+                font-family: "juana";
+            }
+        }
+
+        .checkout {
+            font-size: 1.5em;
+        }
+
+        .side-text {
+            font-size: 0.95em;
+            width: 14em;
+            text-align: left;
+            font-weight: 300;
+            line-height: 1.2em;
+
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            transform: translate(80%, -60%);
+        }
+    }
+
+    .bottom {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+
+        .mileStones {
+            padding-top: 1em;
+            display: flex;
+            font-size: 1.4em;
+            gap: 5.4em;
+
+            .mileStone {
+                text-align: center;
+
+                .text {
+                    h1 {
+                        font-size: 1.96em;
+                    }
+
+                    p {
+                        font-size: 1em;
+                        font-family: "NeueMachina";
+                        white-space: nowrap;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .middle .side-text {
+            display: none;
+        }
+    }
+
+    @media (max-width: 600px) {
+        padding-top: 10vh;
+
+        height: 85vh;
+
+        .middle {
+            font-size: 0.75rem;
+
+            h1 {
+                br {
+                    display: none;
+                }
+            }
+
+            .checkout {
+                font-size: 2.2em;
+            }
+        }
+
+        .bottom {
+            .mileStones {
+                gap: 3em;
+
+                .mileStone {
+                    font-size: 1rem;
+                }
+            }
+        }
+    }
+}
+
+#view2 {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 4rem;
+
+    justify-content: space-around;
+
+    .top {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+
+        span {
+            text-align: center;
+            font-family: "NeueMachina";
+            font-weight: 400;
+            line-height: 1.02em;
+            font-size: 3rem;
+
+            width: 100%;
+        }
+    }
+
+    .middle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .video-container {
+            aspect-ratio: 16/9;
+            position: relative;
+            max-width: 68rem;
+            border-radius: 1.7rem;
+            overflow: hidden;
+            width: 100%;
+            border: none;
+
+            img,
+            iframe {
+                height: 100%;
+                width: 100%;
+            }
+
+            .play-pause {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 1;
+                cursor: pointer;
+
+                i {
+                    font-size: 4em;
+                    aspect-ratio: 1/1;
+                    display: flex;
+
+                    padding: 0.9em;
+                    outline: solid 0.05em var(--white);
+                    border-radius: 50%;
+                    color: var(--white);
+
+                    &::before {
+                        position: absolute;
+                        transform: translate(-50%, -50%);
+                        top: 50%;
+                        left: 50%;
+                        margin-left: 0.08em;
+                    }
+                }
+            }
+        }
+    }
+
+    .bottom {
+        display: flex;
+        justify-content: center;
+
+        .btn {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .top {
+            span {
+                font-size: 1.75rem;
+
+                br {
+                    display: none;
+                }
+            }
+        }
+
+        .middle {
+            .video-container {
+                border-radius: 0.5rem;
+            }
+        }
+
+        .bottom {
+            .btn {
+                font-size: 1.5rem;
+            }
+        }
+    }
+}
+
+#view3 {
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 6rem;
+
+    .top {
+        h1 {
+            font-size: 3em;
+            font-weight: 300;
+
+            span {
+                font-family: "neueMachina";
+            }
+        }
+    }
+
+    .bottom {
+        .courses {
+            display: grid;
+            gap: 2rem;
+            row-gap: 7rem;
+            // align-items: stretch;
+            flex-wrap: wrap;
+            grid-template-columns: repeat(auto-fill, minmax(23rem, 1fr));
+
+            .course-wrapper {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+                flex: 1 0 25rem;
+                
+                .combo{
+                    z-index: 3;
+                    right: 0;
+                    overflow: hidden;
+                    width: 10rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 10rem;
+                    pointer-events: none;
+                    // background-color: red;
+                    position: absolute;
+
+                    span{
+                        position: absolute;
+                        text-align: center;
+                        width: 20rem;
+                        font-weight: 500;
+                        font-size: 1rem;
+                        padding: 0.1rem 0;
+                        transform: rotate(45deg) translateY(-50px);
+                        color: rgb(255, 255, 255);
+                        background-color: rgb(0, 181, 48);
+                    }
+                }
+               
+                .course {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    width: fit-content;
+                    --border-radius: 1rem;
+                    --body-padding: 1.8rem;
+                    --body-padding-vertical: 2rem;
+                    width: 100%;
+                    text-decoration: none;
+
+                    border-radius: var(--border-radius);
+
+                    background-color: var(--ui-element-secondary-color);
+
+                    .course-image {
+                        aspect-ratio: 16/9;
+                        border-radius: var(--border-radius);
+                        border-bottom-left-radius: 0;
+                        border-bottom-right-radius: 0;
+                        overflow: hidden;
+                        width: 100%;
+                        position: relative;
+
+                        img {
+                            height: 100%;
+                            width: 100%;
+                        }
+
+                        .sub-tags {
+                            position: absolute;
+                            top: 0.8em;
+                            right: 0.75em;
+
+                            .sub-tag {
+                                background-color: var(--mercury);
+                                color: var(--black);
+                                padding: 0.4em 1.3em;
+                                border-radius: 0.45em;
+                                text-transform: uppercase;
+                                font-size: 0.65rem;
+                                font-weight: 800;
+                            }
+                        }
+                    }
+
+                    .course-body {
+                        flex: 1 0 auto;
+
+                        padding: var(--body-padding-vertical) var(--body-padding);
+                        padding-right: calc(var(--body-padding) - 0.2em);
+                        border-radius: 0.8rem;
+                        border-top-left-radius: 0;
+                        border-top-right-radius: 0;
+
+                        flex-grow: 1;
+                        letter-spacing: 0.02em;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        .top {
+                            margin-bottom: 3rem;
+                            h2 {
+                                display: flex;
+                                flex-wrap: nowrap;
+                                align-items: center;
+                                font-size: 1.6em;
+                                justify-content: left;
+                                font-weight: 400;
+                                margin-bottom: 0.7rem;
+                            }
+                            .tags {
+                                display: flex;
+                                gap: 1rem;
+                                .live {
+                                    color: white;
+                                    font-size: 1.1em;
+                                    width: fit-content;
+                                    border-radius: 4px;
+                                    text-transform: uppercase;
+                                    padding: 0.3rem 0.8rem;
+                                    background-color: var(--error-color);
+                                }
+                                p {
+                                    font-size: 1.1em;
+                                    width: fit-content;
+                                    border-radius: 4px;
+                                    text-transform: uppercase;
+                                    padding: 0.3rem 0.8rem;
+                                    background-color: var(--ui-element-color);
+                                }
+                            }
+                        }
+                        .bottom {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: flex-end;
+                            .left {
+                                span {
+                                    color: var(--accent-color);
+                                    font-size: 1.1rem;
+                                    font-weight: 300;
+                                }
+                                div {
+                                    display: flex;
+                                    gap: 1rem;
+                                    align-items: center;
+                                    p {
+                                        font-size: 1.7rem;
+                                    }
+                                    small {
+                                        font-size: 1.3rem;
+                                        text-decoration: line-through;
+                                        color: var(--boulder);
+                                    }
+                                    strong {
+                                        margin-left: -0.5rem;
+                                        font-weight: 400;
+                                        font-size: 1.2rem;
+                                    }
+                                }
+                            }
+                            .right {
+                                div {
+                                    margin-bottom: 0.5rem;
+                                    background-color: white;
+                                    color: black;
+                                    font-size: 0.9rem;
+                                    padding: 0.3rem 0.7rem;
+                                    font-weight: 500;
+                                    border-radius: 4px;
+                                }
+                            }
+                        }
+
+                        // span {
+                        //     background-color: crimson;
+                        //     font-size: 0.9rem;
+                        //     white-space: nowrap;
+                        //     font-weight: 700;
+                        //     margin-left: 1rem;
+                        //     border-radius: 3px;
+                        //     padding: 0.2rem 1rem;
+                        // }
+
+                        // p {
+                        //     font-size: 1em;
+                        //     font-weight: 300;
+                        //     color: var(--boulder);
+                        //     line-height: 1.5em;
+
+                        //     display: -webkit-box;
+                        //     -webkit-line-clamp: 2;
+                        //     -webkit-box-orient: vertical;
+                        //     overflow: hidden;
+                        //     text-overflow: ellipsis;
+
+                        // }
+                    }
+
+                    // .course-body-tags {
+                    //     padding: var(--body-padding);
+                    //     display: flex;
+                    //     flex-direction: column;
+                    //     padding-top: 1.5rem;
+                    //     position: relative;
+
+                    //     .devider {
+                    //         width: 95%;
+                    //         height: 0.05em;
+                    //         background-color: var(--fuscous-gray);
+                    //         position: absolute;
+                    //         top: 0%;
+                    //         transform: translateX(-50%);
+                    //         left: 50%;
+                    //     }
+
+                    //     .tags {
+
+                    //         gap: 0.7rem;
+                    //         flex-wrap: wrap;
+                    //         display: flex;
+
+                    //         .tag {
+                    //             background-color: var(--ui-element-highlight-color);
+                    //             padding: 0.7rem 1.1rem;
+                    //             display: flex;
+                    //             justify-content: center;
+                    //             align-items: center;
+                    //             width: fit-content;
+                    //             border-radius: 0.35rem;
+                    //             color: var(--text-color);
+                    //             white-space: nowrap;
+                    //             width: fit-content;
+                    //             font-size: 1em;
+
+                    //         }
+
+                    //     }
+                    // }
+
+                    // .course-instructor {
+                    //     padding: calc(var(--body-padding-vertical) - 0.8em) var(--body-padding);
+                    //     display: flex;
+                    //     align-items: center;
+                    //     justify-content: space-between;
+                    //     margin-bottom: 2rem;
+                    //     background-color: var(--ui-element-highlight-color);
+
+                    //     p {
+                    //         display: flex;
+                    //         color: var(--boulder);
+                    //         align-items: flex-end;
+                    //         gap: 0.4rem;
+
+                    //         &>span {
+                    //             color: var(--text-color);
+                    //         }
+                    //     }
+
+                    //     span {
+                    //         font-size: 1.2em;
+                    //         color: var(--text-color);
+                    //     }
+
+                    // }
+                }
+
+                &.commingSoon {
+                    .course-image {
+                        position: relative;
+
+                        &::after {
+                            content: "Coming soon";
+                            background-color: rgba(24, 24, 24, 0.7);
+                            height: 100%;
+                            width: 100%;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            color: var(--Wild-Sand);
+                            font-size: 1.6em;
+                            font-family: "NeueMachina";
+                        }
+                    }
+                }
+
+                .buy-now {
+                    width: 100%;
+                    font-size: 1.7rem;
+                    font-weight: 600;
+                    padding-top: 0.4em;
+                    padding-bottom: 0.4em;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 600px) {
+        padding: 6rem 0;
+        margin-top: 3rem;
+
+        & > * {
+            padding: 0 var(--main-horizontal-padding);
+        }
+
+        ;
+
+        .top {
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .bottom {
+            padding: 0 0;
+
+            .courses {
+                padding: 0 var(--main-horizontal-padding);
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                gap: 1rem;
+
+                .course-wrapper {
+                    flex: 0 0 89%;
+                    scroll-snap-align: center;
+
+                    .course {
+                        font-size: 1.1rem;
+
+                        .course-body {
+                            h2 {
+                                font-size: 1.4em;
+                            }
+
+                            p {
+                                font-size: 1em;
+                            }
+                        }
+
+                        .course-body-tags {
+                            .tags {
+                                .tag {
+                                    font-size: 1em;
+                                }
+                            }
+                        }
+
+                        .course-instructor {
+                            padding: 1em;
+                            margin-bottom: 2em;
+
+                            p {
+                                font-size: 0.9em;
+                            }
+
+                            span {
+                                font-size: 1.3em;
+                            }
+                        }
+                    }
+
+                    .buy-now {
+                        padding-top: 0.6em;
+                        padding-bottom: 0.6em;
+                        font-size: 1.4em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#view4 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    margin-top: 6rem;
+
+    img {
+        width: 80%;
+    }
+
+    .top {
+        display: flex;
+        justify-content: center;
+
+        h1 {
+            text-align: center;
+            max-width: 53rem;
+
+            span {
+                font-size: 3.25rem;
+                font-family: "NeueMachina";
+                font-weight: 300;
+                line-height: 1.05em;
+            }
+        }
+    }
+
+    .middle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 45vh;
+
+        .companies {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            width: 100%;
+            gap: 2rem;
+
+            .upper,
+            .lower {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                gap: 2rem;
+
+                .companie {
+                    width: 17%;
+                    max-width: 10rem;
+                    aspect-ratio: 1/1;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                    }
+                }
+            }
+        }
+    }
+
+    .bottom {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+
+        .btn {
+            font-size: 1.7rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        gap: 4rem;
+        margin: 0;
+        margin-top: 5rem;
+
+        .top {
+            h1 {
+                span {
+                    font-size: 2.4rem;
+                }
+            }
+        }
+
+        .middle {
+            .companies {
+                gap: 1rem;
+
+                & > * {
+                    gap: 1rem;
+                }
+
+                .companie {
+                    max-width: 6rem;
+                }
+            }
+        }
+
+        .bottom {
+            .btn {
+                display: none;
+            }
+        }
+    }
+}
+
+#view5 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6rem;
+
+    .top {
+        padding-top: 4em;
+        width: 40%;
+
+        .mobile-view {
+            display: none;
+        }
+
+        h1 {
+            font-size: 3.35em;
+            font-weight: 300;
+            line-height: 1.1em;
+            font-family: "NeueMachina";
+            margin-bottom: 0.9em;
+        }
+
+        p {
+            font-size: 1.4em;
+            font-weight: 500;
+            line-height: 1.5em;
+
+            span {
+                font-size: 1.1em;
+                color: var(--boulder);
+            }
+
+            .text-highlight {
+                font-size: 1.3em;
+                line-height: 1em;
+                color: var(--accent-color);
+                font-family: "NeueMachina";
+                font-weight: 300;
+            }
+        }
+    }
+
+    .bottom {
+        width: 60%;
+        padding: 0 2rem;
+        padding-right: 4rem;
+
+        hr {
+            border: 0.5px solid var(--boulder);
+            opacity: 0.3;
+            margin: 2em 0;
+
+            &:nth-last-child(1) {
+                opacity: 0;
+            }
+        }
+
+        .accordian {
+            label {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                cursor: pointer;
+                gap: 1rem;
+
+                .left {
+                    span {
+                        font-size: 1.4em;
+                    }
+                }
+
+                i {
+                    font-size: 1.5em;
+                    border-radius: 50%;
+                    transition: all 0.3s ease-in-out;
+                    display: flex;
+                }
+            }
+
+            &:has(input:checked) {
+                label {
+                    i {
+                        transform: rotate(180deg);
+                    }
+                }
+
+                .content {
+                    grid-template-rows: 1fr;
+
+                    .accordian-content {
+                        padding-top: 2em;
+                    }
+                }
+            }
+
+            .content {
+                display: grid;
+                grid-template-rows: 0fr;
+                transition: all 0.3s ease-in-out;
+
+                * {
+                    transition: all 0.3s ease-in-out;
+                }
+
+                .accordian-content {
+                    overflow: hidden;
+
+                    p {
+                        font-size: 1.05em;
+                        font-weight: 400;
+                        line-height: 1.5em;
+                        color: var(--boulder);
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        margin-top: 0;
+
+        .top {
+            .mobile-view {
+                display: block;
+                font-size: 2rem;
+            }
+
+            *:has(:not(.mobile-view)) {
+                display: none;
+            }
+        }
+
+        .bottom {
+            font-size: 1rem;
+            padding: 0;
+        }
+
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 2rem;
+
+        & > * {
+            width: 100% !important;
+        }
+    }
+}
+
+[data-theme="light"] {
+    #view3 {
+        .bottom {
+            .courses {
+                .course-wrapper {
+                    .course {
+                        .course-image {
+                            .sub-tags {
+                                .sub-tag {
+                                    background-color: var(--cod-gray);
+                                    color: var(--text-color);
+                                }
+                            }
+                        }
+
+                        .course-body-tags {
+                            .devider {
+                                background-color: var(--Silver-Chalice);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.wiggle {
+    color: #BE524B;
+    display: inline-block;
+    animation: wiggle 2s ease-in-out infinite;
+  }
+  
+  @keyframes wiggle {
+    0% {
+      transform: translateX(0);
+    }
+    10% {
+      transform: translateX(-7px);
+    }
+    20%{
+        transform: translateX(7px);
+    }
+    30% {
+      transform: translateX(-4px);
+    }
+    40%{
+        transform: translateX(4px);
+    }
+    50% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+
+    
+   
+    
+    
+    

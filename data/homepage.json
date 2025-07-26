@@ -1,0 +1,126 @@
+{
+  "mainHeading": "This isn't school. This is Shooraverse\nReal skills. Real fast. No bakwaas.",
+  "typewriterTexts": [
+    "Teaching? Nah bro, We upgrade Brains.",
+    "No fake Gyaan, Only real Skillz.",
+    "Taught by Legends, NOT NPCs.",
+    "Full Power, No Bakwaas.",
+    "Stop learning from Sasta tutorials. Come to Shooraverse.",
+    "We mastered the Game, Now we teach the Hacks.",
+    {
+      "text": "Teaching? Nah bro, We upgrade Brains.",
+      "highlights": [
+        "Brains."
+      ]
+    },
+    {
+      "text": "No fake Gyaan, Only real Skillz.",
+      "highlights": [
+        "Skillz.",
+        "Gyaan,"
+      ]
+    },
+    {
+      "text": "Taught by Legends, NOT NPCs.",
+      "highlights": [
+        "Legends,",
+        "NPCs."
+      ]
+    },
+    {
+      "text": "Full Power, No Bakwaas.",
+      "highlights": [
+        "Power,",
+        "Bakwaas."
+      ]
+    },
+    {
+      "text": "Stop learning from Sasta tutorials. Come to Shoora.Tech.",
+      "highlights": [
+        "Sasta",
+        "tutorials.",
+        "Shoora.Tech."
+      ]
+    }
+  ],
+  "stats": {
+    "studentsTaught": "5000",
+    "instructors": "5",
+    "liveProjects": "100"
+  },
+  "subHeading": "Learn Today, Launch Tomorrow. Where Education meets Industry.",
+  "heroImage": "/assets/bg2.svg",
+  "faqs": [
+    {
+      "question": "What kind of courses do you offer?",
+      "answer": "We offer job-ready courses in Web Development, UI/UX Design, 3D Animation, Graphic Design, App Development, and more — all focused on practical learning and real-world projects."
+    },
+    {
+      "question": "Are the classes live or recorded?",
+      "answer": "All our classes are conducted live, with full interaction. However, you also get access to recorded sessions for revision and backup."
+    },
+    {
+      "question": "Do I need any prior knowledge to join the course?",
+      "answer": "No prior experience is required. Our courses are beginner-friendly and start from scratch."
+    },
+    {
+      "question": "Will I receive a certificate after completion?",
+      "answer": "Yes! All students receive an industry-recognized certificate after successfully completing the course and projects."
+    }
+  ],
+  "heroMedia": {
+    "type": "video",
+    "url": "https://res.cloudinary.com/dr8razrcd/video/upload/v1753496569/hero-media/zwqielombow7rxuf473e.mp4"
+  },
+  "mainHeadingWhite": "Thsi IS Shoora verse",
+  "mainHeadingOrange": "Shoratech is teaching palltform ",
+  "heroImageText": "Heloo we ARe shpora tech",
+  "heroImageTextHighlight": "SHoora tech",
+  "companies": [
+    {
+      "src": "https://res.cloudinary.com/dr8razrcd/image/upload/v1753495676/companies-logo/loq0iilnlviik63nwlsx.png",
+      "alt": "shoora-logo",
+      "title": "shoora-logo"
+    },
+    {
+      "src": "https://res.cloudinary.com/dr8razrcd/image/upload/v1753495743/companies-logo/znml7blatfgdwlpwhopi.png",
+      "alt": "CSR Logo",
+      "title": "CSR Logo"
+    },
+    {
+      "src": "https://res.cloudinary.com/dr8razrcd/image/upload/v1753495750/companies-logo/zupswnfgx2xqse6upwfb.png",
+      "alt": "Geeks for Geeks",
+      "title": "Geeks for Geeks"
+    },
+    {
+      "src": "https://res.cloudinary.com/dr8razrcd/image/upload/v1753495756/companies-logo/cc91hh0vqzy7u3ezdg2z.png",
+      "alt": "Wipro",
+      "title": "Wipro"
+    },
+    {
+      "src": "https://res.cloudinary.com/dr8razrcd/image/upload/v1753495764/companies-logo/xkfkuhq2gubwuyucwkmc.png",
+      "alt": "Amazon",
+      "title": "Amazon"
+    },
+    {
+      "src": "https://res.cloudinary.com/dr8razrcd/image/upload/v1753499641/companies-logo/ear3qqmoejmfpuen36f9.png",
+      "alt": "google-icon-isolated-3d-render-illustration",
+      "title": "google-icon-isolated-3d-render-illustration"
+    },
+    {
+      "src": "https://res.cloudinary.com/dr8razrcd/image/upload/v1753499653/companies-logo/vvgyobccd1syk3leqgj1.png",
+      "alt": "shoora-logi-subtract",
+      "title": "shoora-logi-subtract"
+    },
+    {
+      "src": "https://res.cloudinary.com/dr8razrcd/image/upload/v1753499664/companies-logo/zlzgrfjkjlehmzxhgig7.png",
+      "alt": "ChatGPT Image Jul 2, 2025, 04_20_35 PM",
+      "title": "ChatGPT Image Jul 2, 2025, 04_20_35 PM"
+    },
+    {
+      "src": "https://res.cloudinary.com/dr8razrcd/image/upload/v1753500503/companies-logo/rsltktyzahntvivlvuwb.png",
+      "alt": "1753500303517_TCS_c_crop,w_250,h_50,g_auto",
+      "title": "1753500303517_TCS_c_crop,w_250,h_50,g_auto"
+    }
+  ]
+}

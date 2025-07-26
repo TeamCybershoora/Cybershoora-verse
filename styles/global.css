@@ -1,0 +1,38 @@
+/* styles/globals.css */
+body {
+  background-image: url('/assets/bg.svg');
+  background-position: top;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+/* Font Faces */
+@font-face {
+  font-family: 'Beni';
+  src: url('/fonts/BeniBlack.ttf') format('truetype');
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: 'Beni';
+  src: url('/fonts/BeniBold.ttf') format('truetype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Beni';
+  src: url('/fonts/BeniRegular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Beni';
+  src: url('/fonts/BeniLight.ttf') format('truetype');
+  font-weight: 300;
+}
+
+/* Add margin-top to the rectangle image input parent div in Add Course form */
+.add-course-form > div:has(label[for="courseImageInput"]) {
+  margin-top: 1rem;
+}
