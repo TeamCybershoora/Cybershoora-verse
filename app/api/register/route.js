@@ -1,5 +1,5 @@
 import connectDB from '@/lib/dbConnect';
-import Student from '@/models/student';
+import Student from '@/models/Student';
 import { getNextStudentCode } from '@/lib/getNextStudentCode';
 
 export async function POST(req) {

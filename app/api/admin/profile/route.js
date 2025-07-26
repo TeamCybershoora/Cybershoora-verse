@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import Admin from '../../../../models/Admin.js';
-import dbConnect from '../../../../lib/dbConnect.js';
-import { verifyAdminAuth } from '../../../../lib/adminAuth.js';
+import Admin from '@/models/Admin';
+import dbConnect from '@/lib/dbConnect';
+import { verifyAdminAuth } from '@/lib/adminAuth';
 import path from 'path';
 import fs from 'fs';
-import Student from '../../../../models/Student.js';
-import Teacher from '../../../../models/Teacher.js';
+import Student from '@/models/Student';
+import Teacher from '@/models/Teacher';
 import { GET as getCourses } from '../../courses/route.js';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 
