@@ -72,9 +72,7 @@ export default function Navbar() {
     }, []);
 
     return (
-
         <>
-
             <nav>
                 <div className="header">
                     <div className="left nav-left" onClick={() => (window.location.href = '/')}>
