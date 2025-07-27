@@ -588,7 +588,7 @@ const SuperAdminDashboard = () => {
 
           {/* Logo Section */}
           <div className="shoora-logo-wrap">
-            <img src="/assets/Shooraverse-text.svg" alt="Shooraverse" className="shoora-logo" />
+            <img src="/assets/Shoora-tech-text.svg" alt="Shooraverse" className="shoora-logo" />
           </div>
         </div>
       </div>

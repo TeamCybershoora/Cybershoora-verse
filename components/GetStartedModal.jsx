@@ -31,23 +31,40 @@ export default function GetStartedModal({ open, onClose, onlyLogin = false, forc
     if (onClose) onClose();
   };
 
+  const handleBack = () => {
+    setStep(0);
+    setRole(null);
+  };
+
   return (
     <>
     <div className="blur-overlay" onClick={onClose}></div>
     <div className="getstarted-modal-overlay" onClick={onClose}>
       <div className="getstarted-modal" onClick={e => e.stopPropagation()}>
         <button className="close-btn" onClick={onClose}>&times;</button>
-        {/* Modal content */}
+        
+        {/* Step 0: Choose role */}
         {!forceRole && step === 0 && (
           <>
             <h2>Get Started</h2>
             <div className="modal-options">
-              <button className="modal-btn" onClick={() => { setRole('student'); router.push('/student-login'); if (onClose) onClose(); }}>I'm a Student</button>
-              <button className="modal-btn" onClick={() => { setRole('teacher'); router.push('/teacher-login'); if (onClose) onClose(); }}>I'm a Teacher</button>
+              <button className="modal-btn" onClick={() => handleRole('student')}>I'm a Student</button>
+              <button className="modal-btn" onClick={() => handleRole('teacher')}>I'm a Teacher</button>
             </div>
           </>
         )}
-        {/* Remove step 1: no login/register or back button */}
+
+        {/* Step 1: Choose action (login/register) */}
+        {step === 1 && (
+          <>
+            <h2>{role === 'student' ? 'Student' : 'Teacher'} Account</h2>
+            <div className="modal-options">
+              <button className="modal-btn" onClick={() => handleAction('login')}>Login</button>
+              <button className="modal-btn" onClick={() => handleAction('register')}>Register</button>
+            </div>
+            <button className="back-btn" onClick={handleBack}>← Back</button>
+          </>
+        )}
       </div>
       <style jsx>{`
         .getstarted-modal-overlay {
@@ -114,6 +131,10 @@ export default function GetStartedModal({ open, onClose, onlyLogin = false, forc
           border: none;
           font-size: 1rem;
           cursor: pointer;
+          transition: color 0.2s;
+        }
+        .back-btn:hover {
+          color: #fff;
         }
 
         .blur-overlay {

@@ -1,5 +1,5 @@
 body {
-    background-image: url("/assets/bg.svg");
+    background-image: url("https://ik.imagekit.io/cybershoora/Shooraverse/Logos%20of%20Web%20Panel%20or%20Web%20aap/bg.svg?updatedAt=1753653415422");
     background-position: top;
     background-size: cover;
     background-repeat: no-repeat;
@@ -8,7 +8,7 @@ body {
 
 @media (max-width: 200px) {
     body {
-        background-image: url("/public/assets/bg.svg");
+        background-image: url("https://ik.imagekit.io/cybershoora/Shooraverse/Logos%20of%20Web%20Panel%20or%20Web%20aap/bg.svg?updatedAt=1753653415422");
     }
 }
 
