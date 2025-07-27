@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@studio-freight/lenis": "^1.0.42",
+    "lenis": "^1.1.7",
     "@tensorflow/tfjs-node": "^4.22.0",
     "@vladmandic/face-api": "^1.7.15",
     "cloudinary": "^2.7.0",
