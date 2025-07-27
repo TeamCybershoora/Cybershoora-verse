@@ -60,7 +60,18 @@ const nextConfig = {
         assert: false,
         os: false,
         path: false,
+        util: false,
+        buffer: false,
+        process: false,
       };
+    }
+
+    // Handle face-api.js specifically - exclude from server builds
+    if (isServer) {
+      config.module.rules.push({
+        test: /node_modules\/face-api\.js/,
+        use: 'null-loader'
+      });
     }
     
     return config;

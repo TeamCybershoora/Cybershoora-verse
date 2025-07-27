@@ -25,22 +25,28 @@ export default function VerifyFacePopup({
       try {
         setLoading(true);
         
-        // Only load face-api.js when popup is opened
-        const faceApiModule = await import('face-api.js');
-        setFaceapi(faceApiModule);
-        
-        const MODEL_URL = '/models';
-        
-        // Load face-api.js models
-        await Promise.all([
-          faceApiModule.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-          faceApiModule.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-          faceApiModule.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-        ]);
-        
-        setModelsLoaded(true);
-        setLoading(false);
-        console.log('✅ Face-api models loaded successfully');
+        // Only load face-api.js when popup is opened and we're in browser
+        if (typeof window !== 'undefined') {
+          const faceApiModule = await import('face-api.js');
+          setFaceapi(faceApiModule);
+          
+          const MODEL_URL = '/models';
+          
+          // Load face-api.js models
+          await Promise.all([
+            faceApiModule.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+            faceApiModule.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+            faceApiModule.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+          ]);
+          
+          setModelsLoaded(true);
+          setLoading(false);
+          console.log('✅ Face-api models loaded successfully');
+        } else {
+          // Server-side fallback
+          setModelsLoaded(true);
+          setLoading(false);
+        }
       } catch (err) {
         console.error('❌ Error loading face-api models:', err);
         toast.error('❌ Error loading face recognition models');
