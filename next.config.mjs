@@ -8,7 +8,7 @@ const nextConfig = {
       bodySizeLimit: '5mb',
     },
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     if (isServer) {
       // Exclude heavy packages from server-side builds to prevent memory issues
       config.externals = config.externals || [];
@@ -17,7 +17,8 @@ const nextConfig = {
         '@tensorflow/tfjs-node',
         '@vladmandic/face-api',
         'whatsapp-web.js',
-        'puppeteer'
+        'puppeteer',
+        'fluent-ffmpeg'
       );
     }
     
@@ -31,16 +32,47 @@ const nextConfig = {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            priority: 10,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            priority: 5,
           },
         },
       },
     };
+
+    // Add fallbacks for Node.js modules in browser
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+        stream: false,
+        url: false,
+        zlib: false,
+        http: false,
+        https: false,
+        assert: false,
+        os: false,
+        path: false,
+      };
+    }
     
     return config;
   },
   // Add Vercel-specific optimizations
   output: 'standalone',
   poweredByHeader: false,
+  // Increase memory limit for build
+  experimental: {
+    ...nextConfig.experimental,
+    memoryBasedWorkers: true,
+  },
 };
 
 export default nextConfig;
