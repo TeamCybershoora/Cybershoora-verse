@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "installCommand": "npm ci --legacy-peer-deps --no-audit --no-fund",
+  "installCommand": "npm install --legacy-peer-deps --no-audit --no-fund --omit=optional",
   "framework": "nextjs",
   "functions": {
     "app/api/**/*.js": {
