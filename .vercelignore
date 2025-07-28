@@ -1,54 +1,63 @@
-# Development files
+# Environment files
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Logs
+# Dependencies
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# Git
+.git/
+.gitignore
 
-# Coverage directory used by tools like istanbul
-coverage
+# Large model files
+public/models/
+public/assets/models/
 
-# nyc test coverage
-.nyc_output
+# Test files
+**/*.test.js
+**/*.test.jsx
+**/*.test.ts
+**/*.test.tsx
+**/__tests__/
+**/tests/
+**/test/
 
-# Dependency directories
-node_modules/
+# Documentation
+README.md
+*.md
+docs/
 
-# Optional npm cache directory
-.npm
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
-
-# next.js build output
-.next
-
-# Temporary folders
-tmp/
-temp/
-
-# IDE files
+# Development files
 .vscode/
 .idea/
+*.log
+.DS_Store
+Thumbs.db
+
+# Large video assets
+public/assets/*.mp4
+public/assets/*.avi
+public/assets/*.mov
+public/assets/*.wmv
+
+# Development scripts
+scripts/
+tmp/
+
+# Large image files (keep only essential ones)
+public/assets/*.psd
+public/assets/*.ai
+public/assets/*.sketch
+
+# Backup files
+*.bak
+*.backup
+*~
 
 # OS generated files
 .DS_Store
@@ -59,31 +68,78 @@ temp/
 ehthumbs.db
 Thumbs.db
 
-# Git
-.git
-.gitignore
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# Large model files that should be loaded at runtime
-public/models/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
-# Test files
-**/*.test.js
-**/*.test.jsx
-**/*.test.ts
-**/*.test.tsx
-**/*.spec.js
-**/*.spec.jsx
-**/*.spec.ts
-**/*.spec.tsx
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# Documentation
-README.md
-*.md
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
 
-# Large assets that can be loaded at runtime
-public/assets/*.mp4
-public/assets/*.mov
-public/assets/*.avi
+# nyc test coverage
+.nyc_output
 
-# Development scripts
-scripts/ 
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/ 

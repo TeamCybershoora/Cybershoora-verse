@@ -27,6 +27,7 @@ export default function VerifyFacePopup({
         
         // Only load face-api.js when popup is opened and we're in browser
         if (typeof window !== 'undefined') {
+          // Dynamic import to prevent server-side loading
           const faceApiModule = await import('face-api.js');
           setFaceapi(faceApiModule);
           
@@ -159,357 +160,145 @@ export default function VerifyFacePopup({
         return;
       }
 
-      console.log('✅ Face detected in live camera');
+      console.log('✅ Face detected in live video');
 
-      // Calculate face similarity
-      const distance = faceapi.euclideanDistance(
-        uploadedDescriptor.descriptor, 
-        liveDescriptor.descriptor
-      );
-      
-      const similarity = Math.max(0, (1 - distance) * 100);
-      const threshold = 0.5; // Adjust threshold as needed
+      // Compare face descriptors
+      const distance = faceapi.euclideanDistance(uploadedDescriptor.descriptor, liveDescriptor.descriptor);
+      const threshold = 0.6; // Lower threshold = stricter matching
 
-      console.log(`📊 Face similarity: ${similarity.toFixed(2)}%, Distance: ${distance.toFixed(3)}`);
+      console.log('📊 Face similarity distance:', distance, 'Threshold:', threshold);
 
       if (distance < threshold) {
         setVerificationStatus('success');
-        toast.success(`✅ Face verification successful! Similarity: ${similarity.toFixed(1)}%`);
+        toast.success('✅ Face verification successful!');
         
-        // Capture webcam image for verification record
-        const webcamImage = captureWebcamImage();
-        if (webcamImage && setVerifiedFaceImage) {
-          setVerifiedFaceImage(webcamImage);
-          console.log('✅ Webcam image captured for verification');
-        }
+        // Capture verified face image
+        const verifiedImage = captureWebcamImage();
+        setVerifiedFaceImage(verifiedImage);
         
-        setFaceVerified(true);
-        
-        // Auto close after successful verification
         setTimeout(() => {
+          setFaceVerified(true);
           onClose();
-        }, 2000);
-        
+        }, 1500);
       } else {
         setVerificationStatus('failed');
-        toast.error(`❌ Face verification failed. Similarity: ${similarity.toFixed(1)}%. Please try again.`);
+        toast.error('❌ Face verification failed. Please ensure you are the same person in both photos.');
         setTimeout(() => setVerificationStatus(''), 3000);
       }
-
     } catch (err) {
       console.error('❌ Face verification error:', err);
       setVerificationStatus('failed');
-      toast.error('❌ Error during face verification. Please try again.');
+      toast.error('❌ Face verification error. Please try again.');
       setTimeout(() => setVerificationStatus(''), 3000);
     }
-  };
-
-  const handleVerify = () => {
-    runVerification();
-  };
-
-  const handleClose = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-    }
-    setVerificationStatus('');
-    setLoading(true);
-    setModelsLoaded(false);
-    setFaceapi(null);
-    onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="popup-overlay" onClick={handleClose}>
-      <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-        <div className="popup-header">
-          <h2>Face Verification</h2>
-          <button className="close-btn" onClick={handleClose}>×</button>
-        </div>
+    <div style={{
+      position: 'fixed',
+      top: 0, left: 0, right: 0, bottom: 0,
+      background: 'rgba(0,0,0,0.8)',
+      zIndex: 9999,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem'
+    }}>
+      <div style={{
+        background: '#1a1a1a',
+        borderRadius: 20,
+        padding: '2rem',
+        maxWidth: 500,
+        width: '100%',
+        textAlign: 'center',
+        color: '#fff',
+        border: '2px solid #9747ff'
+      }}>
+        <h2 style={{ marginBottom: '1rem', color: '#9747ff' }}>
+          Face Verification
+        </h2>
         
-        <p>Position your face in the camera to match with your uploaded photo</p>
-
-        <div className="face-compare-container">
-          <div className="face-side">
-            <p>Uploaded Photo</p>
-            {imageSrc ? (
-              <img src={imageSrc} alt="Uploaded face" />
-            ) : (
-              <div className="loading-placeholder">No image uploaded</div>
-            )}
+        {loading ? (
+          <div style={{ padding: '2rem' }}>
+            <div style={{ marginBottom: '1rem' }}>Loading face recognition models...</div>
+            <div style={{ width: 40, height: 40, border: '4px solid #9747ff', borderTop: '4px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto' }}></div>
           </div>
-          
-          <div className="face-side">
-            <p>Live Camera</p>
-            {loading ? (
-              <div className="loading-placeholder">
-                <div className="spinner"></div>
-                <span>Loading camera...</span>
-              </div>
-            ) : (
-              <video 
-                ref={videoRef} 
-                width="240" 
-                height="180" 
-                muted 
-                autoPlay 
-                playsInline
+        ) : (
+          <>
+            <div style={{ marginBottom: '1rem' }}>
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                style={{
+                  width: '100%',
+                  maxWidth: 400,
+                  borderRadius: 10,
+                  border: '2px solid #9747ff'
+                }}
               />
-            )}
-          </div>
-        </div>
-
-        {/* Verification Status Display */}
-        {verificationStatus && (
-          <div className={`verification-status ${verificationStatus}`}>
-            {verificationStatus === 'verifying' && (
-              <div className="status-content">
-                <div className="spinner"></div>
-                <span>Verifying faces...</span>
-              </div>
-            )}
-            {verificationStatus === 'success' && (
-              <div className="status-content">
-                <span className="success-icon">✅</span>
-                <span>Face verification successful!</span>
-              </div>
-            )}
-            {verificationStatus === 'failed' && (
-              <div className="status-content">
-                <span className="failed-icon">❌</span>
-                <span>Face verification failed!</span>
-              </div>
-            )}
-          </div>
+            </div>
+            
+            <canvas
+              ref={canvasRef}
+              style={{ display: 'none' }}
+            />
+            
+            <div style={{ marginBottom: '1rem' }}>
+              {verificationStatus === 'verifying' && (
+                <div style={{ color: '#9747ff' }}>Verifying face...</div>
+              )}
+              {verificationStatus === 'success' && (
+                <div style={{ color: '#10b981' }}>✅ Verification successful!</div>
+              )}
+              {verificationStatus === 'failed' && (
+                <div style={{ color: '#ef4444' }}>❌ Verification failed</div>
+              )}
+            </div>
+            
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button
+                onClick={runVerification}
+                disabled={verificationStatus === 'verifying'}
+                style={{
+                  background: '#9747ff',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: 10,
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  opacity: verificationStatus === 'verifying' ? 0.5 : 1
+                }}
+              >
+                {verificationStatus === 'verifying' ? 'Verifying...' : 'Verify Face'}
+              </button>
+              
+              <button
+                onClick={onClose}
+                style={{
+                  background: 'transparent',
+                  color: '#fff',
+                  border: '2px solid #9747ff',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: 10,
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
         )}
-
-        <button 
-          onClick={handleVerify} 
-          className="verify-button"
-          disabled={loading || !modelsLoaded || verificationStatus === 'verifying'}
-        >
-          {loading ? 'Loading models...' : 
-           !modelsLoaded ? 'Loading...' : 
-           verificationStatus === 'verifying' ? 'Verifying...' : 
-           'Verify Face'}
-        </button>
-
-        {/* Hidden canvas for image capture */}
-        <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
       </div>
-
+      
       <style jsx>{`
-        .popup-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.8);
-          backdrop-filter: blur(5px);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 9999;
-          padding: 20px;
-        }
-
-        .popup-content {
-          background-image: url("/assets/bg2.svg");
-          padding: 30px;
-          border-radius: 16px;
-          max-width: 650px;
-          width: 100%;
-          color: white;
-          text-align: center;
-          position: relative;
-          max-height: 90vh;
-          overflow-y: auto;
-          border: 1px solid #333;
-        }
-
-        .popup-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-
-        .popup-header h2 {
-          margin: 0;
-          color: #9747ff;
-        }
-
-        .close-btn {
-          background: none;
-          border: none;
-          color: #fff;
-          font-size: 24px;
-          cursor: pointer;
-          padding: 0;
-          width: 30px;
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          transition: background-color 0.3s ease;
-        }
-
-        .close-btn:hover {
-          background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .face-compare-container {
-          display: flex;
-          justify-content: space-around;
-          margin: 20px 0;
-          gap: 20px;
-        }
-
-        .face-side {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          flex: 1;
-        }
-
-        .face-side p {
-          margin-bottom: 10px;
-          font-weight: bold;
-          color: #ccc;
-        }
-
-        .face-side img,
-        .face-side video {
-          width: 240px;
-          height: 180px;
-          border-radius: 10px;
-          object-fit: cover;
-          border: 2px solid #9747FF;
-          background: black;
-        }
-
-        .loading-placeholder {
-          width: 240px;
-          height: 180px;
-          border-radius: 10px;
-          border: 2px solid #9747FF;
-          background: #333;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          color: #ccc;
-          gap: 10px;
-        }
-
-        .verify-button {
-          background: #9747FF;
-          border: none;
-          padding: 12px 24px;
-          color: white;
-          border-radius: 8px;
-          font-weight: bold;
-          cursor: pointer;
-          font-size: 16px;
-          transition: background-color 0.3s ease;
-          margin-top: 20px;
-        }
-
-        .verify-button:hover:not(:disabled) {
-          background: #7d3be2;
-        }
-
-        .verify-button:disabled {
-          background: #666;
-          cursor: not-allowed;
-        }
-
-        /* Verification Status Styles */
-        .verification-status {
-          margin: 20px 0;
-          padding: 15px;
-          border-radius: 10px;
-          text-align: center;
-          font-weight: bold;
-          animation: slideIn 0.3s ease-out;
-        }
-
-        .verification-status.verifying {
-          background: rgba(151, 71, 255, 0.2);
-          border: 1px solid #9747FF;
-          color: #9747FF;
-        }
-
-        .verification-status.success {
-          background: rgba(40, 167, 69, 0.2);
-          border: 1px solid #28a745;
-          color: #28a745;
-        }
-
-        .verification-status.failed {
-          background: rgba(220, 53, 69, 0.2);
-          border: 1px solid #dc3545;
-          color: #dc3545;
-        }
-
-        .status-content {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-        }
-
-        .success-icon, .failed-icon {
-          font-size: 20px;
-        }
-
-        /* Spinner Animation */
-        .spinner {
-          width: 20px;
-          height: 20px;
-          border: 2px solid transparent;
-          border-top: 2px solid #9747FF;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
-        }
-
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @media (max-width: 768px) {
-          .popup-content {
-            padding: 20px;
-            margin: 10px;
-          }
-
-          .face-compare-container {
-            flex-direction: column;
-            gap: 15px;
-          }
-
-          .face-side img,
-          .face-side video,
-          .loading-placeholder {
-            width: 200px;
-            height: 150px;
-          }
         }
       `}</style>
     </div>

@@ -7,7 +7,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '2mb',
+      bodySizeLimit: '1mb', // Reduced to minimum
     },
     workerThreads: false,
     cpus: 1,
@@ -23,7 +23,7 @@ const nextConfig = {
   },
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
-      // Exclude heavy packages from server-side builds to prevent memory issues
+      // Exclude ALL heavy packages from server-side builds
       config.externals = config.externals || [];
       config.externals.push(
         'face-api.js',
@@ -32,7 +32,19 @@ const nextConfig = {
         'puppeteer',
         'fluent-ffmpeg',
         'recharts',
-        'gsap'
+        'gsap',
+        'react-webcam',
+        'jspdf',
+        'qrcode',
+        'twilio',
+        'nodemailer',
+        'mongoose',
+        'cloudinary',
+        'formidable',
+        'express',
+        'cors',
+        'jsonwebtoken',
+        'next-auth'
       );
     }
     
@@ -55,29 +67,29 @@ const nextConfig = {
       ...config.optimization,
       splitChunks: {
         chunks: 'all',
-        maxSize: 100000, // Even smaller chunks
+        maxSize: 50000, // Very small chunks
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
             priority: 10,
-            maxSize: 100000,
+            maxSize: 50000,
           },
           common: {
             name: 'common',
             minChunks: 2,
             chunks: 'all',
             priority: 5,
-            maxSize: 100000,
+            maxSize: 50000,
           },
           // Separate heavy libraries
           heavy: {
-            test: /[\\/]node_modules[\\/](recharts|gsap|face-api\.js)[\\/]/,
+            test: /[\\/]node_modules[\\/](recharts|gsap|face-api\.js|react-webcam)[\\/]/,
             name: 'heavy',
             chunks: 'all',
             priority: 15,
-            maxSize: 50000,
+            maxSize: 25000,
           },
         },
       },
