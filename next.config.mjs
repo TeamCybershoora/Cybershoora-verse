@@ -7,7 +7,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '2mb', // Reduced from 5mb
+      bodySizeLimit: '2mb',
     },
     workerThreads: false,
     cpus: 1,
@@ -21,6 +21,8 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Completely disable static generation
+  staticPageGenerationTimeout: 0,
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
       // Exclude heavy packages from server-side builds to prevent memory issues
@@ -55,21 +57,21 @@ const nextConfig = {
       ...config.optimization,
       splitChunks: {
         chunks: 'all',
-        maxSize: 150000, // Further reduced chunk size
+        maxSize: 100000, // Even smaller chunks
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
             priority: 10,
-            maxSize: 150000,
+            maxSize: 100000,
           },
           common: {
             name: 'common',
             minChunks: 2,
             chunks: 'all',
             priority: 5,
-            maxSize: 150000,
+            maxSize: 100000,
           },
           // Separate heavy libraries
           heavy: {
@@ -77,7 +79,7 @@ const nextConfig = {
             name: 'heavy',
             chunks: 'all',
             priority: 15,
-            maxSize: 100000,
+            maxSize: 50000,
           },
         },
       },

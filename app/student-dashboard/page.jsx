@@ -1,10 +1,14 @@
 'use client';
+import { unstable_noStore as noStore } from 'next/cache';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AdvertisementBanner from '../../components/AdvertisementBanner';
 
 export default function DashboardPage() {
+  // Force dynamic rendering to prevent static generation issues
+  noStore();
+  
   const router = useRouter();
   const [studentData, setStudentData] = useState(null);
   const [loading, setLoading] = useState(true);
