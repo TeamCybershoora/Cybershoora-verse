@@ -1,5 +1,6 @@
 "use client";
 import { useLayoutEffect, useEffect, useState, useRef } from "react";
+import { unstable_noStore as noStore } from 'next/cache';
 import '@/styles/index.css';
 import '@/styles/index.scss';
 import '@/styles/common.css';
@@ -16,6 +17,9 @@ import { useAuthRedirect } from '../hooks/useAuthRedirect';
 
 
 export default function HomePage() {
+  // Force dynamic rendering to prevent static generation issues
+  noStore();
+  
   const router = useRouter();
   const [homepageCourses, setHomepageCourses] = useState([]);
   const [showGetStarted, setShowGetStarted] = useState(false);

@@ -13,7 +13,11 @@ const nextConfig = {
     workerThreads: false,
     cpus: 1,
     optimizePackageImports: ['react-icons', 'lucide-react'],
-    staticPageGenerationTimeout: 120,
+    staticPageGenerationTimeout: 60, // Reduced timeout
+  },
+  // Disable static generation for heavy pages
+  generateStaticParams: async () => {
+    return [];
   },
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
@@ -43,26 +47,26 @@ const nextConfig = {
       );
     }
     
-    // Optimize bundle size and memory usage
+    // Aggressive bundle optimization
     config.optimization = {
       ...config.optimization,
       splitChunks: {
         chunks: 'all',
-        maxSize: 244000,
+        maxSize: 200000, // Reduced chunk size
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
             priority: 10,
-            maxSize: 244000,
+            maxSize: 200000,
           },
           common: {
             name: 'common',
             minChunks: 2,
             chunks: 'all',
             priority: 5,
-            maxSize: 244000,
+            maxSize: 200000,
           },
         },
       },
@@ -113,8 +117,10 @@ const nextConfig = {
   // Reduce memory usage
   swcMinify: true,
   reactStrictMode: false,
-  // Optimize static generation
-  staticPageGenerationTimeout: 120,
+  // Disable static generation for problematic pages
+  staticPageGenerationTimeout: 60,
+  // Force dynamic rendering for heavy pages
+  dynamicParams: true,
 };
 
 export default nextConfig;

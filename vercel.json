@@ -9,7 +9,8 @@
   },
   "build": {
     "env": {
-      "NODE_OPTIONS": "--max-old-space-size=6144"
+      "NODE_OPTIONS": "--max-old-space-size=6144",
+      "SKIP_STATIC_GENERATION": "true"
     }
   },
   "regions": ["iad1"]
