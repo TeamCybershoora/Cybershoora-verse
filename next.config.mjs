@@ -11,6 +11,7 @@ const nextConfig = {
     workerThreads: false,
     cpus: 1,
     optimizePackageImports: ['react-icons', 'lucide-react'],
+    staticPageGenerationTimeout: 120,
   },
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
@@ -96,6 +97,8 @@ const nextConfig = {
   // Reduce memory usage
   swcMinify: true,
   reactStrictMode: false,
+  // Optimize static generation
+  staticPageGenerationTimeout: 120,
 };
 
 export default nextConfig;
