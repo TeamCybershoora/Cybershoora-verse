@@ -9,15 +9,9 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '5mb',
     },
-    memoryBasedWorkers: true,
     workerThreads: false,
     cpus: 1,
     optimizePackageImports: ['react-icons', 'lucide-react'],
-    staticPageGenerationTimeout: 60, // Reduced timeout
-  },
-  // Disable static generation for heavy pages
-  generateStaticParams: async () => {
-    return [];
   },
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
@@ -114,12 +108,7 @@ const nextConfig = {
   trailingSlash: false,
   compress: true,
   // Reduce memory usage
-  swcMinify: true,
   reactStrictMode: false,
-  // Disable static generation for problematic pages
-  staticPageGenerationTimeout: 60,
-  // Force dynamic rendering for heavy pages
-  dynamicParams: true,
 };
 
 export default nextConfig;
