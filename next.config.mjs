@@ -7,6 +7,7 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '5mb',
     },
+    memoryBasedWorkers: true,
   },
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
@@ -79,11 +80,6 @@ const nextConfig = {
   // Add Vercel-specific optimizations
   output: 'standalone',
   poweredByHeader: false,
-  // Increase memory limit for build
-  experimental: {
-    ...nextConfig.experimental,
-    memoryBasedWorkers: true,
-  },
 };
 
 export default nextConfig;
