@@ -1,5 +1,0 @@
-[33mf3a169a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Add Vercel-specific optimizations: vercel.json config and enhanced webpack settings
-[33m657e861[m Optimize Vercel deployment: exclude heavy packages, add webpack optimizations and .vercelignore
-[33m4e614cd[m Fix deprecated lenis package for Vercel deployment
-[33m0a39b25[m Updated GetStartedModal with two-step popup flow for student/teacher selection
-[33ma07e002[m Fix: Optimize face-api.js loading to prevent Vercel OOM errors - Add webpack externals and dynamic imports

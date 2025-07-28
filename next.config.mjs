@@ -27,6 +27,20 @@ const nextConfig = {
       );
     }
     
+    // Remove console.log in production
+    if (!dev) {
+      config.optimization.minimizer.push(
+        new (require('terser-webpack-plugin'))({
+          terserOptions: {
+            compress: {
+              drop_console: true,
+              drop_debugger: true,
+            },
+          },
+        })
+      );
+    }
+    
     // Optimize bundle size and memory usage
     config.optimization = {
       ...config.optimization,
