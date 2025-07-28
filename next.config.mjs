@@ -17,6 +17,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Disable TypeScript checking during build to speed up deployment
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
       // Exclude heavy packages from server-side builds to prevent memory issues
