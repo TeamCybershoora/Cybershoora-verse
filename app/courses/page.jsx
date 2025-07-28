@@ -1,4 +1,6 @@
 "use client";
+import { unstable_noStore as noStore } from 'next/cache';
+
 import { useEffect, useState, useRef } from "react";
 import HomepageCourseCard from '../../components/HomepageCourseCard';
 import '@/styles/courses.css';
@@ -6,6 +8,9 @@ import '@/styles/scratcher.css';
 import Scratcher from '../../components/Scratcher';
 
 export default function CoursesPage() {
+  // Force dynamic rendering to prevent static generation issues
+  noStore();
+  
   const canvasRef = useRef(null);
   const baseRef = useRef(null);
 

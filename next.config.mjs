@@ -21,8 +21,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Completely disable static generation
-  staticPageGenerationTimeout: 0,
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
       // Exclude heavy packages from server-side builds to prevent memory issues
