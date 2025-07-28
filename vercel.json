@@ -9,9 +9,10 @@
   },
   "build": {
     "env": {
-      "NODE_OPTIONS": "--max-old-space-size=6144",
+      "NODE_OPTIONS": "--max-old-space-size=8192",
       "SKIP_STATIC_GENERATION": "true",
-      "NEXT_TELEMETRY_DISABLED": "1"
+      "NEXT_TELEMETRY_DISABLED": "1",
+      "NODE_ENV": "production"
     }
   },
   "regions": ["iad1"]

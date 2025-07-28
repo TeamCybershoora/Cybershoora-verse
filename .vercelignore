@@ -64,4 +64,26 @@ Thumbs.db
 .gitignore
 
 # Large model files that should be loaded at runtime
-public/models/ 
+public/models/
+
+# Test files
+**/*.test.js
+**/*.test.jsx
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.js
+**/*.spec.jsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Documentation
+README.md
+*.md
+
+# Large assets that can be loaded at runtime
+public/assets/*.mp4
+public/assets/*.mov
+public/assets/*.avi
+
+# Development scripts
+scripts/ 

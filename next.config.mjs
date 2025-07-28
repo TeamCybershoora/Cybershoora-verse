@@ -7,7 +7,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '5mb',
+      bodySizeLimit: '2mb', // Reduced from 5mb
     },
     workerThreads: false,
     cpus: 1,
@@ -30,7 +30,9 @@ const nextConfig = {
         '@tensorflow/tfjs-node',
         '@vladmandic/face-api',
         'puppeteer',
-        'fluent-ffmpeg'
+        'fluent-ffmpeg',
+        'recharts',
+        'gsap'
       );
     }
     
@@ -48,26 +50,34 @@ const nextConfig = {
       );
     }
     
-    // Aggressive bundle optimization
+    // Ultra-aggressive bundle optimization for memory
     config.optimization = {
       ...config.optimization,
       splitChunks: {
         chunks: 'all',
-        maxSize: 200000, // Reduced chunk size
+        maxSize: 150000, // Further reduced chunk size
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
             priority: 10,
-            maxSize: 200000,
+            maxSize: 150000,
           },
           common: {
             name: 'common',
             minChunks: 2,
             chunks: 'all',
             priority: 5,
-            maxSize: 200000,
+            maxSize: 150000,
+          },
+          // Separate heavy libraries
+          heavy: {
+            test: /[\\/]node_modules[\\/](recharts|gsap|face-api\.js)[\\/]/,
+            name: 'heavy',
+            chunks: 'all',
+            priority: 15,
+            maxSize: 100000,
           },
         },
       },
