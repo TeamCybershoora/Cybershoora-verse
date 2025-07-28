@@ -8,6 +8,9 @@ const nextConfig = {
       bodySizeLimit: '5mb',
     },
     memoryBasedWorkers: true,
+    workerThreads: false,
+    cpus: 1,
+    optimizePackageImports: ['react-icons', 'lucide-react'],
   },
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
@@ -23,23 +26,26 @@ const nextConfig = {
       );
     }
     
-    // Optimize bundle size
+    // Optimize bundle size and memory usage
     config.optimization = {
       ...config.optimization,
       splitChunks: {
         chunks: 'all',
+        maxSize: 244000,
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
             priority: 10,
+            maxSize: 244000,
           },
           common: {
             name: 'common',
             minChunks: 2,
             chunks: 'all',
             priority: 5,
+            maxSize: 244000,
           },
         },
       },
@@ -80,6 +86,16 @@ const nextConfig = {
   // Add Vercel-specific optimizations
   output: 'standalone',
   poweredByHeader: false,
+  // Reduce memory usage during build
+  generateBuildId: async () => {
+    return 'build-' + Date.now();
+  },
+  // Disable static optimization for heavy pages
+  trailingSlash: false,
+  compress: true,
+  // Reduce memory usage
+  swcMinify: true,
+  reactStrictMode: false,
 };
 
 export default nextConfig;
