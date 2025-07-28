@@ -1,3 +1,5 @@
+import TerserPlugin from 'terser-webpack-plugin';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -30,7 +32,7 @@ const nextConfig = {
     // Remove console.log in production
     if (!dev) {
       config.optimization.minimizer.push(
-        new (require('terser-webpack-plugin'))({
+        new TerserPlugin({
           terserOptions: {
             compress: {
               drop_console: true,
