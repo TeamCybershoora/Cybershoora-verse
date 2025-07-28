@@ -27,7 +27,6 @@ const nextConfig = {
         'face-api.js',
         '@tensorflow/tfjs-node',
         '@vladmandic/face-api',
-        'whatsapp-web.js',
         'puppeteer',
         'fluent-ffmpeg'
       );
