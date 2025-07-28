@@ -1,4 +1,5 @@
 "use client";
+import { unstable_noStore as noStore } from 'next/cache';
 
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart, CartesianGrid, Tooltip } from 'recharts';
@@ -9,6 +10,9 @@ import EditHomepage from './EditHomepage';
 
 
 const SuperAdminDashboard = () => {
+  // Force dynamic rendering to prevent static generation issues
+  noStore();
+  
   const [activeSection, setActiveSection] = useState('dashboard');
   const [adminData, setAdminData] = useState(null);
   const [studentCount, setStudentCount] = useState(null);

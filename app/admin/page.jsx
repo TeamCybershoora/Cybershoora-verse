@@ -1,9 +1,13 @@
 "use client";
+import { unstable_noStore as noStore } from 'next/cache';
 
 import { useState, useEffect } from "react";
 import LoginFormStyle from "../../components/LoginFormStyle";
 
 export default function SuperAdminPage() {
+  // Force dynamic rendering to prevent static generation issues
+  noStore();
+  
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
