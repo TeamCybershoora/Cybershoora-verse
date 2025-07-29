@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import Student from '@/models/Student';
 import Teacher from '@/models/Teacher';
-import { GET as getCourses } from '../../courses/route.js';
+import Course from '@/models/Course';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 
 export async function POST(request) {
@@ -106,12 +106,10 @@ export async function GET(request) {
         customSchool: 1
       }).sort({ createdAt: -1 });
       // Fetch all courses for mapping
-      const allCourses = await (await getCourses()).json();
+      const allCourses = await Course.find({ status: 'active' });
       const courseMap = {};
-      if (allCourses.success && Array.isArray(allCourses.courses)) {
-        for (const c of allCourses.courses) {
-          courseMap[c.title] = c.currentPrice;
-        }
+      for (const c of allCourses) {
+        courseMap[c.title] = c.currentPrice;
       }
       // Attach fee to each student
       const students = studentsRaw.map(s => ({
@@ -123,12 +121,8 @@ export async function GET(request) {
     
     // If query param ?courses=1, return all available courses
     if (url.searchParams.get('courses') === '1') {
-      // Use the courses API route to get all courses
-      const res = await getCourses();
-      const courses = await res.json();
-      // The courses API returns an array directly, so we need to handle both cases
-      const coursesArray = Array.isArray(courses) ? courses : (courses.courses || []);
-      return NextResponse.json({ success: true, courses: coursesArray });
+      const courses = await Course.find({ status: 'active' }).sort({ createdAt: -1 });
+      return NextResponse.json({ success: true, courses });
     }
     
     // If query param ?stats=1, return student/teacher counts

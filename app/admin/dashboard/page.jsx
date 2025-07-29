@@ -34,6 +34,10 @@ const SuperAdminDashboard = () => {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [memberType, setMemberType] = useState('student');
+  const [chartMemberType, setChartMemberType] = useState('student');
+  const [fromDay, setFromDay] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('All');
+  const [selectedYear, setSelectedYear] = useState('All');
   const [teachers, setTeachers] = useState([]);
   const [hoveredTeacher, setHoveredTeacher] = useState(null);
   const [hoveredTeacherPos, setHoveredTeacherPos] = useState({ top: 0, left: 0 });
@@ -58,15 +62,572 @@ const SuperAdminDashboard = () => {
     duration: '',
     level: '',
     category: '',
-    imageUrl: ''
+    imageUrl: '',
+    technologies: [],
+    technologiesInput: ''
   });
-  const [editModal, setEditModal] = useState({ open: false, course: null, form: null });
+  const [editModal, setEditModal] = useState({ 
+    open: false, 
+    course: null, 
+    form: {
+      title: '',
+      duration: '',
+      languages: '',
+      originalPrice: '',
+      currentPrice: '',
+      discount: '',
+      details: '',
+      image: '',
+      teacherName: '',
+      technologies: [],
+      technologiesInput: ''
+    }
+  });
   const [viewDetailsModal, setViewDetailsModal] = useState({ open: false, course: null });
+  const [deleteModal, setDeleteModal] = useState({ open: false, course: null });
+  const [openDropdowns, setOpenDropdowns] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [bannerText, setBannerText] = useState('🎉 Sale! Save 20% TODAY on all Courses Use: GADDARIKARBEY 🎁 Ends SOON! Don\'t miss your chance to transform your career!');
+  const [bannerActive, setBannerActive] = useState(true);
+  const [bannerColors, setBannerColors] = useState(['#ea5c03', '#ffe100']);
+  const [bannerFont, setBannerFont] = useState({ size: 18, weight: 'bold', color: '#000000' });
+  const [bannerScrollSpeed, setBannerScrollSpeed] = useState(20); // Default 20 seconds
+
+  // Handle logout function
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/admin/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Clear any local state
+        setAdminData(null);
+        // Redirect to admin login page
+        window.location.href = '/admin';
+      } else {
+        console.error('Logout failed');
+        // Still redirect to admin login page even if logout fails
+        window.location.href = '/admin';
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Redirect to admin login page even if there's an error
+      window.location.href = '/admin';
+    }
+  };
+
+  // Handle student mouse move for hover effects
+  const handleStudentMouseMove = (e) => {
+    setStudentMousePos({ x: e.clientX, y: e.clientY });
+  };
+
+  // Handle teacher mouse move for hover effects
+  const handleTeacherMouseMove = (e) => {
+    setTeacherMousePos({ x: e.clientX, y: e.clientY });
+  };
+
+  // Handle page change for pagination
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  // Calculate total pages for pagination
+  const totalPages = Math.ceil(
+    (memberType === 'student' ? students.length : teachers.length) / itemsPerPage
+  );
+
+  // Get current items for pagination
+  const getCurrentItems = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return memberType === 'student' 
+      ? students.slice(startIndex, endIndex)
+      : teachers.slice(startIndex, endIndex);
+  };
+
+  // Course management functions
+  const handleAddCourse = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData(e.target);
+      
+      // Basic validation
+      const title = formData.get('title');
+      const duration = formData.get('duration');
+      const originalPrice = formData.get('originalPrice');
+      const currentPrice = formData.get('currentPrice');
+      
+      if (!title || !duration || !originalPrice || !currentPrice) {
+        toast.error('❌ Please fill in all required fields (Title, Duration, Original Price, Current Price)');
+        return;
+      }
+      
+      if (!courseImageFile && !courseImageUrl) {
+        toast.error('❌ Please upload an image or provide an image URL');
+        return;
+      }
+      
+      // Add technologies to form data
+      if (courseForm.technologies && courseForm.technologies.length > 0) {
+        formData.set('technologies', courseForm.technologies.join(','));
+      }
+      
+      // Add image file if selected
+      if (courseImageFile) {
+        formData.set('image', courseImageFile);
+      } else if (courseImageUrl) {
+        formData.set('image', courseImageUrl);
+      }
+      
+      console.log('Adding course with form data:', Object.fromEntries(formData));
+      
+      // Show loading toast
+      const loadingToast = toast.loading('🔄 Adding course...');
+      
+      const response = await fetch('/api/courses', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('✅ Course added successfully');
+        const result = await response.json();
+        
+        // Dismiss loading toast
+        toast.dismiss(loadingToast);
+        
+        // Reset form
+        e.target.reset();
+        setCourseForm({
+          originalPrice: '',
+          currentPrice: '',
+          discount: '',
+          teacherName: '',
+          courseName: '',
+          description: '',
+          duration: '',
+          level: '',
+          category: '',
+          imageUrl: '',
+          technologies: [],
+          technologiesInput: ''
+        });
+        setCourseImageFile(null);
+        setCourseImageUrl('');
+        setCourseImagePreview('');
+        
+        // Refresh courses list
+        const coursesRes = await fetch('/api/courses');
+        const coursesData = await coursesRes.json();
+        if (Array.isArray(coursesData)) {
+          setCourses(coursesData);
+        }
+        
+        toast.success('✅ Course added successfully!');
+      } else {
+        // Dismiss loading toast
+        toast.dismiss(loadingToast);
+        console.error('❌ Failed to add course');
+        const errorData = await response.json();
+        toast.error(`❌ Error adding course: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      // Dismiss loading toast if it exists
+      if (typeof loadingToast !== 'undefined') {
+        toast.dismiss(loadingToast);
+      }
+      console.error('❌ Error adding course:', error);
+      toast.error('❌ Error adding course. Please try again.');
+    }
+  };
+
+  const handleEditCourse = (course) => {
+    console.log('Editing course:', course);
+    const formData = {
+      title: course.title || '',
+      duration: course.duration || '',
+      languages: course.languages || '',
+      originalPrice: course.originalPrice || '',
+      currentPrice: course.currentPrice || '',
+      discount: course.discount || '',
+      details: course.details || '',
+      image: course.image || '',
+      teacherName: course.teacherName || '',
+      technologies: course.technologies || [],
+      technologiesInput: ''
+    };
+    console.log('Form data:', formData);
+    setEditModal({
+      open: true,
+      course: course,
+      form: formData
+    });
+  };
+
+  const handleDeleteCourse = (course) => {
+    setDeleteModal({ open: true, course: course });
+  };
+
+  const handleViewDetails = (course) => {
+    setViewDetailsModal({ open: true, course: course });
+  };
+
+  const confirmDeleteCourse = async () => {
+    try {
+      console.log('Deleting course:', deleteModal.course);
+      
+      const response = await fetch(`/api/courses?id=${deleteModal.course._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log('✅ Course deleted successfully');
+        
+        // Refresh courses list
+        const coursesRes = await fetch('/api/courses');
+        const coursesData = await coursesRes.json();
+        if (Array.isArray(coursesData)) {
+          setCourses(coursesData);
+        }
+        setDeleteModal({ open: false, course: null });
+        toast.success('✅ Course deleted successfully!');
+      } else {
+        console.error('❌ Failed to delete course');
+        const errorData = await response.json();
+        toast.error(`❌ Error deleting course: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('❌ Error deleting course:', error);
+      toast.error('❌ Error deleting course. Please try again.');
+    }
+  };
+
+  // Course form handlers
+  const handleCourseImageFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setCourseImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => setCourseImagePreview(e.target.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCourseImageUrlChange = (e) => {
+    setCourseImageUrl(e.target.value);
+    setCourseImagePreview(e.target.value);
+  };
+
+  // Edit modal handlers
+  const handleEditModalChange = (field, value) => {
+    setEditModal(prev => ({
+      ...prev,
+      form: { ...prev.form, [field]: value }
+    }));
+  };
+
+  const handleEditModalSave = async () => {
+    try {
+      console.log('Saving edit:', editModal.form);
+      
+      // Show loading toast
+      const loadingToast = toast.loading('🔄 Updating course...');
+      
+      const formData = new FormData();
+      
+      // Add all form fields
+      Object.keys(editModal.form).forEach(key => {
+        if (key === 'technologies') {
+          formData.set(key, editModal.form[key].join(','));
+        } else if (key !== 'technologiesInput' && key !== 'imagePreview') {
+          formData.set(key, editModal.form[key]);
+        }
+      });
+      
+      // Add image file if selected
+      if (editModal.form.imagePreview && editModal.form.imagePreview.startsWith('data:')) {
+        // Convert base64 to file
+        const response = await fetch(editModal.form.imagePreview);
+        const blob = await response.blob();
+        const file = new File([blob], 'course-image.jpg', { type: 'image/jpeg' });
+        formData.set('image', file);
+      } else if (editModal.form.image) {
+        formData.set('image', editModal.form.image);
+      }
+      
+      const response = await fetch(`/api/courses?id=${editModal.course._id}`, {
+        method: 'PATCH',
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('✅ Course updated successfully');
+        
+        // Dismiss loading toast
+        toast.dismiss(loadingToast);
+        
+        // Refresh courses list
+        const coursesRes = await fetch('/api/courses');
+        const coursesData = await coursesRes.json();
+        if (Array.isArray(coursesData)) {
+          setCourses(coursesData);
+        }
+        
+        setEditModal({ open: false, course: null, form: null });
+        toast.success('✅ Course updated successfully!');
+      } else {
+        // Dismiss loading toast
+        toast.dismiss(loadingToast);
+        console.error('❌ Failed to update course');
+        const errorData = await response.json();
+        toast.error(`❌ Error updating course: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      // Dismiss loading toast if it exists
+      if (typeof loadingToast !== 'undefined') {
+        toast.dismiss(loadingToast);
+      }
+      console.error('❌ Error updating course:', error);
+      toast.error('❌ Error updating course. Please try again.');
+    }
+  };
+
+  const handleEditModalImageFile = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setEditModal(prev => ({
+          ...prev,
+          form: { ...prev.form, imagePreview: e.target.result }
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleEditModalImageUrl = (e) => {
+    setEditModal(prev => ({
+      ...prev,
+      form: { ...prev.form, image: e.target.value, imagePreview: e.target.value }
+    }));
+  };
+
+  const handleEditModalTechKeyDown = (e) => {
+    if ((e.key === 'Enter' || e.key === ',') && editModal.form?.technologiesInput && editModal.form.technologiesInput.trim()) {
+      e.preventDefault();
+      const newTechs = editModal.form.technologiesInput.split(',').map(t => t.trim()).filter(Boolean);
+      setEditModal(prev => ({
+        ...prev,
+        form: {
+          ...prev.form,
+          technologies: [
+            ...prev.form.technologies,
+            ...newTechs.filter(t => t && !prev.form.technologies.includes(t))
+          ],
+          technologiesInput: ''
+        }
+      }));
+    }
+  };
+
+  const handleEditModalTechPaste = (e) => {
+    const paste = e.clipboardData.getData('text');
+    if (paste.includes(',')) {
+      e.preventDefault();
+      const newTechs = paste.split(',').map(t => t.trim()).filter(Boolean);
+      setEditModal(prev => ({
+        ...prev,
+        form: {
+          ...prev.form,
+          technologies: [
+            ...prev.form.technologies,
+            ...newTechs.filter(t => t && !prev.form.technologies.includes(t))
+          ],
+          technologiesInput: ''
+        }
+      }));
+    }
+  };
+
+  const handleEditModalRemoveTech = (idx) => {
+    setEditModal(prev => ({
+      ...prev,
+      form: {
+        ...prev.form,
+        technologies: prev.form.technologies.filter((t, i) => i !== idx)
+      }
+    }));
+  };
+
+  // Banner functions
+  const handlePreviewBanner = () => {
+    // Store current banner settings
+    const currentBannerText = localStorage.getItem('adBannerText') || '';
+    const currentBannerActive = localStorage.getItem('adBannerActive') || 'true';
+    const currentBannerColors = localStorage.getItem('adBannerColors') || '';
+    const currentBannerFont = localStorage.getItem('adBannerFont') || '';
+
+    // Save preview settings
+    localStorage.setItem('adBannerText', bannerText);
+    localStorage.setItem('adBannerActive', bannerActive.toString());
+    localStorage.setItem('adBannerColors', JSON.stringify(bannerColors));
+    localStorage.setItem('adBannerFont', JSON.stringify(bannerFont));
+
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerText', newValue: bannerText }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerActive', newValue: bannerActive.toString() }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerColors', newValue: JSON.stringify(bannerColors) }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerFont', newValue: JSON.stringify(bannerFont) }));
+
+    toast.success('✅ Banner preview shown at top of page!');
+
+    setTimeout(() => {
+      localStorage.setItem('adBannerText', currentBannerText);
+      localStorage.setItem('adBannerActive', currentBannerActive);
+      localStorage.setItem('adBannerColors', currentBannerColors);
+      localStorage.setItem('adBannerFont', currentBannerFont);
+      window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerText', newValue: currentBannerText }));
+      window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerActive', newValue: currentBannerActive }));
+      window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerColors', newValue: currentBannerColors }));
+      window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerFont', newValue: currentBannerFont }));
+      toast.success('✅ Preview ended - banner restored!');
+    }, 5000);
+  };
+
+  const handleSaveBanner = () => {
+    localStorage.setItem('adBannerText', bannerText);
+    localStorage.setItem('adBannerActive', bannerActive.toString());
+    localStorage.setItem('adBannerColors', JSON.stringify(bannerColors));
+    localStorage.setItem('adBannerFont', JSON.stringify(bannerFont));
+    localStorage.setItem('adBannerScrollSpeed', bannerScrollSpeed.toString());
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerText', newValue: bannerText }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerActive', newValue: bannerActive.toString() }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerColors', newValue: JSON.stringify(bannerColors) }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerFont', newValue: JSON.stringify(bannerFont) }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerScrollSpeed', newValue: bannerScrollSpeed.toString() }));
+    toast.success('✅ Banner saved successfully! The advertisement banner has been updated.');
+  };
+
+  const handleResetBanner = () => {
+    const defaultText = '🎉 Sale! Save 20% TODAY on all Courses Use: GADDARIKARBEY 🎁 Ends SOON! Don\'t miss your chance to transform your career!';
+    setBannerText(defaultText);
+    setBannerActive(true);
+    setBannerColors(['#ea5c03', '#ffe100']);
+    setBannerFont({ size: 18, weight: 'bold', color: '#000000' });
+    setBannerScrollSpeed(20);
+    localStorage.setItem('adBannerText', defaultText);
+    localStorage.setItem('adBannerActive', 'true');
+    localStorage.setItem('adBannerColors', JSON.stringify(['#ea5c03', '#ffe100']));
+    localStorage.setItem('adBannerFont', JSON.stringify({ size: 18, weight: 'bold', color: '#000000' }));
+    localStorage.setItem('adBannerScrollSpeed', '20');
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerText', newValue: defaultText }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerActive', newValue: 'true' }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerColors', newValue: JSON.stringify(['#ea5c03', '#ffe100']) }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerFont', newValue: JSON.stringify({ size: 18, weight: 'bold', color: '#000000' }) }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'adBannerScrollSpeed', newValue: '20' }));
+    toast.success('✅ Banner reset to default!');
+  };
+
+  // Load banner data from localStorage on component mount
+  useEffect(() => {
+    const savedBannerText = localStorage.getItem('adBannerText');
+    const savedBannerActive = localStorage.getItem('adBannerActive');
+    const savedBannerColors = localStorage.getItem('adBannerColors');
+    const savedBannerFont = localStorage.getItem('adBannerFont');
+    const savedBannerScrollSpeed = localStorage.getItem('adBannerScrollSpeed');
+    
+    if (savedBannerText) {
+      setBannerText(savedBannerText);
+    }
+    
+    if (savedBannerActive !== null) {
+      setBannerActive(savedBannerActive === 'true');
+    }
+    
+    if (savedBannerColors) {
+      setBannerColors(JSON.parse(savedBannerColors));
+    }
+    
+    if (savedBannerFont) {
+      setBannerFont(JSON.parse(savedBannerFont));
+    }
+
+    if (savedBannerScrollSpeed) {
+      const speed = parseInt(savedBannerScrollSpeed);
+      if (!isNaN(speed)) {
+        setBannerScrollSpeed(speed);
+      }
+    }
+  }, []);
+
+  // Initialize data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch admin profile
+        const adminRes = await fetch('/api/admin/profile');
+        const adminData = await adminRes.json();
+        if (adminData.success) {
+          setAdminData(adminData.admin);
+        }
+
+        // Fetch students
+        const studentsRes = await fetch('/api/admin/profile?students=1');
+        const studentsData = await studentsRes.json();
+        if (studentsData.success) {
+          setStudents(studentsData.students || []);
+        }
+
+        // Fetch teachers
+        const teachersRes = await fetch('/api/admin/profile?teachers=1');
+        const teachersData = await teachersRes.json();
+        if (teachersData.success) {
+          setTeachers(teachersData.teachers || []);
+        }
+
+        // Fetch courses
+        const coursesRes = await fetch('/api/courses');
+        const coursesData = await coursesRes.json();
+        // The courses API returns the array directly, not wrapped in a success object
+        if (Array.isArray(coursesData)) {
+          setCourses(coursesData);
+        } else if (coursesData.success && coursesData.courses) {
+          setCourses(coursesData.courses);
+        } else {
+          setCourses([]);
+        }
+
+        // Fetch stats
+        const statsRes = await fetch('/api/admin/profile?stats=1');
+        const statsData = await statsRes.json();
+        if (statsData.success) {
+          setStudentCount(statsData.studentCount || 0);
+          setTeacherCount(statsData.teacherCount || 0);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // ... existing code ...
 
   return (
+    <>
     <div className="dashboard-container">
       {/* Sidebar */}
       <div className="sidebar">
@@ -304,7 +865,7 @@ const SuperAdminDashboard = () => {
                         onChange={e => setSelectedCourse(e.target.value)}
                       >
                         <option value="">All Courses</option>
-                        {courses.map((course, idx) => (
+                        {(courses || []).map((course, idx) => (
                           <option key={course.title || idx} value={course.title}>{course.title}</option>
                         ))}
                       </select>
@@ -671,7 +1232,7 @@ const SuperAdminDashboard = () => {
                     <option value="All">All</option>
                     {(() => {
                       // Get unique months from students data, sorted in calendar order
-                      const monthSet = new Set(students.map(s => new Date(s.createdAt).getMonth()));
+                      const monthSet = new Set((students || []).map(s => new Date(s.createdAt).getMonth()));
                       const monthsArr = Array.from(monthSet).sort((a, b) => a - b);
                       return monthsArr.map(mIdx => {
                         const label = new Date(0, mIdx).toLocaleString('default', { month: 'short' });
@@ -684,7 +1245,7 @@ const SuperAdminDashboard = () => {
                   <select value={selectedYear} onChange={e => setSelectedYear(e.target.value)} style={{ marginLeft: 8, padding: '6px 12px', borderRadius: 8, border: '1px solid #9747ff', background: '#181828', color: '#fff', fontWeight: 600 }}>
                     <option value="All">All</option>
                     {/* Unique years from students data, descending */}
-                    {Array.from(new Set(students.map(s => new Date(s.createdAt).getFullYear()))).sort((a, b) => b - a).map(y => (
+                    {Array.from(new Set((students || []).map(s => new Date(s.createdAt).getFullYear()))).sort((a, b) => b - a).map(y => (
                       <option key={y} value={y}>{y}</option>
                     ))}
                   </select>
@@ -695,7 +1256,7 @@ const SuperAdminDashboard = () => {
                 <div className="highlight-badge" style={{ background: 'transparent', border: '2px solid #9747ff', color: '#fff' }}>{
                   // Total admissions in filtered range (dynamic for student/teacher)
                   (() => {
-                    const dataArr = chartMemberType === 'student' ? students : teachers;
+                    const dataArr = chartMemberType === 'student' ? (students || []) : (teachers || []);
                     let filtered = dataArr;
                     if (fromDay && selectedMonth !== 'All' && selectedYear !== 'All') {
                       const monthIdx = new Date(Date.parse(selectedMonth + ' 1, 2000')).getMonth();
@@ -737,7 +1298,7 @@ const SuperAdminDashboard = () => {
                   <BarChart
                     data={(() => {
                       const now = new Date();
-                      const dataArr = chartMemberType === 'student' ? students : teachers;
+                      const dataArr = chartMemberType === 'student' ? (students || []) : (teachers || []);
                       // If fromDay, month, year are selected, show bars for each day from fromDay to end of month
                       if (fromDay && selectedMonth !== 'All' && selectedYear !== 'All') {
                         const monthIdx = new Date(Date.parse(selectedMonth + ' 1, 2000')).getMonth();
@@ -846,14 +1407,7 @@ const SuperAdminDashboard = () => {
                     <XAxis dataKey={fromDay && selectedMonth !== 'All' && selectedYear !== 'All' ? 'day' : (selectedMonth !== 'All' && selectedYear !== 'All' && !fromDay ? 'day' : 'month')} axisLine={false} tickLine={false} tick={{ fill: '#bdbdbd', fontWeight: 600, fontSize: 13 }} />
                     <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: '#bdbdbd', fontWeight: 600, fontSize: 13 }} />
                     <Tooltip cursor={{ fill: 'rgba(151,71,255,0.08)' }} contentStyle={{ background: '#181828', border: '1px solid #9747ff', borderRadius: 10, color: '#fff', fontWeight: 600 }} labelStyle={{ color: '#9747ff', fontWeight: 700 }} />
-                    <Bar dataKey="count" fill="url(#admissionsBar)" radius={[8, 8, 0, 0]} maxBarSize={32} >
-                      {/* Show value dots on top of each bar */}
-                      {
-                        ((barProps) => barProps.payload && barProps.payload.count > 0 ? (
-                          <circle cx={barProps.x + barProps.width / 2} cy={barProps.y} r={6} fill="#fff" stroke="#9747ff" strokeWidth={3} />
-                        ) : null)
-                      }
-                    </Bar>
+                    <Bar dataKey="count" fill="url(#admissionsBar)" radius={[8, 8, 0, 0]} maxBarSize={32} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -1035,7 +1589,7 @@ const SuperAdminDashboard = () => {
                   }}
                 />
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
-                  {courseForm.technologies.map((tech, idx) => (
+                  {(courseForm.technologies || []).map((tech, idx) => (
                     <span key={tech} style={{
                       background: '#9747ff',
                       color: '#fff',
@@ -1078,11 +1632,12 @@ const SuperAdminDashboard = () => {
           <section id="view3">
             <div className="bottom">
               <div className="courses" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', rowGap: '2rem' }}>
-                {courses.length === 0 ? (
+                {console.log('Rendering courses section, courses count:', courses?.length)}
+                {courses?.length === 0 ? (
                   <div style={{ color: '#fff', textAlign: 'center', gridColumn: '1/-1' }}>No courses found.</div>
                 ) : (
-                  courses.map((course, idx) => {
-                    console.log('course:', course);
+                  (courses || []).map((course, idx) => {
+                    console.log('Rendering course:', course);
                     return (
                       <div className="course-card" key={course._id || idx} style={{ background: '#101114', borderRadius: 18, boxShadow: '0 8px 32px 0 rgba(10,12,20,0.22)', border: '1.5px solid #232428', color: '#fff', overflow: 'hidden', display: 'flex', flexDirection: 'column', minWidth: 360, maxWidth: 480, margin: '0 1rem 2rem 1rem', position: 'relative' }}>
                         {/* Background overlays absolutely positioned at the back */}
@@ -1127,7 +1682,7 @@ const SuperAdminDashboard = () => {
                                 }}
                               >
                                 {course.title}
-                                {Array.isArray(course.technologies) && course.technologies.length > 0 && (
+                                                                  {Array.isArray(course.technologies) && (course.technologies || []).length > 0 && (
                                   <span style={{ display: 'inline-block', transition: 'transform 0.3s', transform: openDropdowns[idx] ? 'rotate(180deg)' : 'rotate(0deg)' }}>
                                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M6 9L11 14L16 9" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
@@ -1136,11 +1691,11 @@ const SuperAdminDashboard = () => {
                                 )}
                               </h3>
                               {/* Technologies dropdown: only show if open */}
-                              {Array.isArray(course.technologies) && course.technologies.length > 0 && openDropdowns[idx] && (
+                              {Array.isArray(course.technologies) && (course.technologies || []).length > 0 && openDropdowns[idx] && (
                                 <div style={{ margin: '4px 0 8px 0' }}>
                                   <strong style={{ color: '#8b5cf6', fontSize: 14 }}>Technologies:</strong>
                                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: 6 }}>
-                                    {course.technologies.map((tech, i) => (
+                                    {(course.technologies || []).map((tech, i) => (
                                       <span key={i} style={{ background: '#8b5cf6', color: '#fff', borderRadius: '16px', padding: '4px 14px', fontSize: 14, fontWeight: 500, display: 'inline-block' }}>{tech}</span>
                                     ))}
                                   </div>
@@ -1155,7 +1710,7 @@ const SuperAdminDashboard = () => {
                               {course.duration && <p className="course-duration" style={{ color: '#8b5cf6', fontWeight: 600, margin: 0, marginBottom: 10 }}>{course.duration}</p>}
                               {course.languages && (
                                 <div className="Course-language" style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
-                                  {(Array.isArray(course.languages) ? course.languages : course.languages.split(',')).map((lang, i) => (
+                                  {(Array.isArray(course.languages) ? (course.languages || []) : (course.languages || '').split(',')).map((lang, i) => (
                                     <p key={i} style={{ background: '#333', color: '#fff', borderRadius: 8, padding: '4px 10px', fontSize: 13, margin: 0 }}>{lang.trim()}</p>
                                   ))}
                                 </div>
@@ -1511,7 +2066,7 @@ const SuperAdminDashboard = () => {
                       background: '#181828',
                       color: '#fff'
                     }}
-                    value={editModal.form.title || ''}
+                    value={editModal.form?.title || ''}
                     onChange={e => handleEditModalChange('title', e.target.value)}
                     required
                   />
@@ -1530,7 +2085,7 @@ const SuperAdminDashboard = () => {
                       background: '#181828',
                       color: '#fff'
                     }}
-                    value={editModal.form.duration || ''}
+                    value={editModal.form?.duration || ''}
                     onChange={e => handleEditModalChange('duration', e.target.value)}
                     required
                   />
@@ -1549,7 +2104,7 @@ const SuperAdminDashboard = () => {
                       background: '#181828',
                       color: '#fff'
                     }}
-                    value={Array.isArray(editModal.form.languages) ? editModal.form.languages.join(', ') : (editModal.form.languages || '')}
+                    value={Array.isArray(editModal.form?.languages) ? editModal.form?.languages.join(', ') : (editModal.form?.languages || '')}
                     onChange={e => handleEditModalChange('languages', e.target.value)}
                     required
                   />
@@ -1568,7 +2123,7 @@ const SuperAdminDashboard = () => {
                       background: '#181828',
                       color: '#fff'
                     }}
-                    value={editModal.form.originalPrice || ''}
+                    value={editModal.form?.originalPrice || ''}
                     onChange={e => {
                       const value = e.target.value.replace(/[^\d.]/g, '');
                       setEditModal(prev => {
@@ -1608,7 +2163,7 @@ const SuperAdminDashboard = () => {
                       background: '#181828',
                       color: '#fff'
                     }}
-                    value={editModal.form.currentPrice || ''}
+                    value={editModal.form?.currentPrice || ''}
                     onChange={e => {
                       const value = e.target.value.replace(/[^\d.]/g, '');
                       setEditModal(prev => {
@@ -1639,7 +2194,7 @@ const SuperAdminDashboard = () => {
                       background: '#181828',
                       color: '#fff'
                     }}
-                    value={editModal.form.discount || ''}
+                    value={editModal.form?.discount || ''}
                     onChange={e => {
                       const value = e.target.value.replace(/[^\d.]/g, '');
                       setEditModal(prev => {
@@ -1670,7 +2225,7 @@ const SuperAdminDashboard = () => {
                       minHeight: 80,
                       resize: 'vertical'
                     }}
-                    value={editModal.form.details || ''}
+                    value={editModal.form?.details || ''}
                     onChange={e => handleEditModalChange('details', e.target.value)}
                     required
                   />
@@ -1692,9 +2247,9 @@ const SuperAdminDashboard = () => {
                       cursor: 'pointer',
                       overflow: 'hidden'
                     }}>
-                      {editModal.form.imagePreview ? (
+                      {editModal.form?.imagePreview ? (
                         <img
-                          src={editModal.form.imagePreview}
+                                                      src={editModal.form?.imagePreview}
                           alt="Course Preview"
                           style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 10 }}
                         />
@@ -1732,7 +2287,7 @@ const SuperAdminDashboard = () => {
                       color: '#fff'
                     }}
                     placeholder="Paste image link here"
-                    value={editModal.form.image || ''}
+                    value={editModal.form?.image || ''}
                     onChange={handleEditModalImageUrl}
                   />
                 </div>
@@ -1750,7 +2305,7 @@ const SuperAdminDashboard = () => {
                       background: '#181828',
                       color: '#fff'
                     }}
-                    value={editModal.form.teacherName || ''}
+                    value={editModal.form?.teacherName || ''}
                     onChange={e => handleEditModalChange('teacherName', e.target.value)}
                   />
                 </div>
@@ -1769,13 +2324,13 @@ const SuperAdminDashboard = () => {
                       color: '#fff'
                     }}
                     placeholder="Type a technology and press Enter or comma (e.g. Python)"
-                    value={editModal.form.technologiesInput || ''}
+                    value={editModal.form?.technologiesInput || ''}
                     onChange={e => handleEditModalChange('technologiesInput', e.target.value)}
                     onKeyDown={handleEditModalTechKeyDown}
                     onPaste={handleEditModalTechPaste}
                   />
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
-                    {(Array.isArray(editModal.form.technologies) ? editModal.form.technologies : []).map((tech, idx) => (
+                    {(Array.isArray(editModal.form?.technologies) ? (editModal.form.technologies || []) : []).map((tech, idx) => (
                       <span key={tech} style={{
                         background: '#9747ff',
                         color: '#fff',
@@ -2155,7 +2710,7 @@ const SuperAdminDashboard = () => {
                           Technologies
                         </h4>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                          {viewDetailsModal.course.technologies.map((tech, i) => (
+                          {(viewDetailsModal.course?.technologies || []).map((tech, i) => (
                             <span key={i} style={{
                               background: '#9747ff',
                               color: '#fff',
@@ -2286,12 +2841,14 @@ const SuperAdminDashboard = () => {
           <div style={{
             padding: '2rem',
             color: '#fff',
+            marginRight: '10rem',
             
             fontFamily: 'NeueMachina'
           }}>
             <div style={{
               textAlign: 'center',
-              marginBottom: '2rem'
+              marginBottom: '2rem',
+              
             }}>
               <h1 style={{
                 fontSize: '2.5rem',
@@ -2516,15 +3073,16 @@ const SuperAdminDashboard = () => {
             backgroundRepeat: 'no-repeat',
             backgroundAttachment: 'fixed',
             fontFamily: 'NeueMachina',
-            padding: '2rem',
+            padding: '0',
             color: '#fff',
-            marginLeft: '5rem',
+            marginLeft: '2rem',
             marginRight: '2rem'
           }}>
             <div style={{
               maxWidth: '1200px',
               margin: '0 auto',
-              paddingTop: '20px'
+              paddingTop: '20px',
+              padding: '2rem'
             }}>
               {/* Header */}
               <div style={{
@@ -2554,7 +3112,7 @@ const SuperAdminDashboard = () => {
               {/* Editor Grid */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
+                
                 gap: '2rem',
                 marginBottom: '2rem'
               }}>
@@ -2600,10 +3158,113 @@ const SuperAdminDashboard = () => {
                         resize: 'vertical',
                         fontFamily: 'inherit'
                       }}
-                      placeholder="Enter your advertisement text here..."
+                      placeholder="Enter your advertisement text here... (Short or long text works perfectly!)"
                     />
+                    <div style={{
+                      marginTop: '0.5rem',
+                      fontSize: '0.875rem',
+                      color: '#888',
+                      fontStyle: 'italic'
+                    }}>
+                      💡 <strong>Text Length:</strong> {bannerText.length} characters
+                      {bannerText.length < 50 && ' (Short - Fast scroll)'}
+                      {bannerText.length >= 50 && bannerText.length < 100 && ' (Medium - Normal scroll)'}
+                      {bannerText.length >= 100 && bannerText.length < 150 && ' (Long - Slow scroll)'}
+                      {bannerText.length >= 150 && ' (Very Long - Very slow scroll)'}
+                    </div>
                   </div>
 
+                  {/* Multiple Gradient Color Pickers */}
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{
+                      display: 'block',
+                      color: '#ccc',
+                      fontWeight: '500',
+                      marginBottom: '1rem',
+                      fontSize: '1rem'
+                    }}>
+                      Background Colors
+                    </label>
+                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                      {bannerColors.map((color, idx) => (
+                        <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+                          <div style={{ position: 'relative' }}>
+                            <input
+                              type="color"
+                              value={color}
+                              onChange={e => {
+                                const newColors = [...bannerColors];
+                                newColors[idx] = e.target.value;
+                                setBannerColors(newColors);
+                              }}
+                              style={{
+                                width: 40,
+                                height: 40,
+                                border: 'none',
+                                background: color,
+                                borderRadius: '50%',
+                                cursor: 'pointer',
+                                boxShadow: '0 0 0 2px #eee'
+                              }}
+                            />
+                            {bannerColors.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newColors = bannerColors.filter((_, index) => index !== idx);
+                                  setBannerColors(newColors);
+                                }}
+                                style={{
+                                  position: 'absolute',
+                                  top: -8,
+                                  right: -8,
+                                  width: 20,
+                                  height: 20,
+                                  border: 'none',
+                                  background: '#ff4444',
+                                  borderRadius: '50%',
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  fontSize: 12,
+                                  color: '#fff',
+                                  fontWeight: 'bold',
+                                  boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                                }}
+                                title="Remove color"
+                              >×</button>
+                            )}
+                          </div>
+                          <span style={{ fontSize: 12, color: '#888', marginTop: 4 }}>Color {idx + 1}</span>
+                        </div>
+                      ))}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <button
+                          type="button"
+                          onClick={() => setBannerColors([...bannerColors, '#ffffff'])}
+                          style={{
+                            width: 40,
+                            height: 40,
+                            border: '2px dashed #aaa',
+                            background: '#fff',
+                            borderRadius: '50%',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: 24,
+                            color: '#aaa',
+                           
+                          }}
+                          title="Add another color"
+                        >+</button>
+                        <span style={{ fontSize: 12, color: '#888', marginTop: '0.3rem' }}>Add Color</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Font Size Control */}
                   <div style={{ marginBottom: '1.5rem' }}>
                     <label style={{
                       display: 'block',
@@ -2616,7 +3277,8 @@ const SuperAdminDashboard = () => {
                     </label>
                     <input
                       type="number"
-                      value="18"
+                      value={bannerFont.size}
+                      onChange={(e) => setBannerFont(f => ({ ...f, size: Number(e.target.value) }))}
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -2631,6 +3293,7 @@ const SuperAdminDashboard = () => {
                     />
                   </div>
 
+                  {/* Font Weight Control */}
                   <div style={{ marginBottom: '1.5rem' }}>
                     <label style={{
                       display: 'block',
@@ -2642,7 +3305,8 @@ const SuperAdminDashboard = () => {
                       Font Weight
                     </label>
                     <select
-                      value="bold"
+                      value={bannerFont.weight}
+                      onChange={(e) => setBannerFont(f => ({ ...f, weight: e.target.value }))}
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -2661,6 +3325,80 @@ const SuperAdminDashboard = () => {
                     </select>
                   </div>
 
+                  {/* Font Color Control */}
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{
+                      display: 'block',
+                      color: '#ccc',
+                      fontWeight: '500',
+                      marginBottom: '0.5rem',
+                      fontSize: '1rem'
+                    }}>
+                      Font Color
+                    </label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <input
+                        type="color"
+                        value={bannerFont.color}
+                        onChange={(e) => setBannerFont(f => ({ ...f, color: e.target.value }))}
+                      style={{
+                          width: 50,
+                          height: 50,
+                          border: 'none',
+                        borderRadius: '10px',
+                          cursor: 'pointer',
+                          background: bannerFont.color
+                        }}
+                      />
+                      <span style={{ color: '#ccc', fontSize: '0.9rem' }}>
+                        {bannerFont.color}
+                      </span>
+                  </div>
+                </div>
+
+                  {/* Banner Active Toggle */}
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{
+                      display: 'block',
+                      color: '#ccc',
+                      fontWeight: '500',
+                      marginBottom: '0.5rem',
+                      fontSize: '1rem'
+                    }}>
+                      Banner Active
+                    </label>
+                    <label style={{ display: 'inline-block', marginLeft: 10 }}>
+                      <input
+                        type="checkbox"
+                        checked={bannerActive}
+                        onChange={e => setBannerActive(e.target.checked)}
+                        style={{ display: 'none' }}
+                      />
+                      <span style={{
+                        display: 'inline-block',
+                        width: 40,
+                        height: 22,
+                        background: bannerActive ? '#22c55e' : '#ccc',
+                        borderRadius: 22,
+                        position: 'relative',
+                        cursor: 'pointer',
+                        transition: 'background 0.2s'
+                      }}>
+                        <span style={{
+                          display: 'block',
+                          width: 18,
+                          height: 18,
+                          background: '#fff',
+                          borderRadius: '50%',
+                          position: 'absolute',
+                          top: 2,
+                          left: bannerActive ? 20 : 2,
+                          transition: 'left 0.2s'
+                        }} />
+                      </span>
+                    </label>
+                  </div>
+
                   <div style={{ marginBottom: '1.5rem' }}>
                     <label style={{
                       display: 'block',
@@ -2673,7 +3411,10 @@ const SuperAdminDashboard = () => {
                     </label>
                     <input
                       type="number"
-                      value="20"
+                      value={bannerScrollSpeed}
+                      onChange={(e) => setBannerScrollSpeed(parseInt(e.target.value) || 20)}
+                      min="5"
+                      max="60"
                       style={{
                         width: '100%',
                         padding: '0.75rem',
@@ -2683,134 +3424,18 @@ const SuperAdminDashboard = () => {
                         background: '#181828',
                         color: '#fff'
                       }}
-                      min="5"
-                      max="60"
                     />
-                  </div>
-                </div>
-
-                {/* Right Column - Color Settings */}
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  padding: '2rem',
-                  borderRadius: '20px',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  backdropFilter: 'blur(10px)'
-                }}>
-                  <h3 style={{
-                    color: '#9747ff',
-                    fontSize: '1.5rem',
-                    fontWeight: '600',
-                    margin: '0 0 1.5rem 0'
-                  }}>
-                    Colors & Styling
-                  </h3>
-
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{
-                      display: 'block',
-                      color: '#ccc',
-                      fontWeight: '500',
-                      marginBottom: '0.5rem',
-                      fontSize: '1rem'
-                    }}>
-                      Background Color
-                    </label>
-                    <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-                      <input
-                        type="color"
-                        value="#ea5c03"
-                        style={{
-                          width: '60px',
-                          height: '50px',
-                          border: 'none',
-                          borderRadius: '10px',
-                          cursor: 'pointer'
-                        }}
-                      />
-                      <input
-                        type="color"
-                        value="#ffe100"
-                        style={{
-                          width: '60px',
-                          height: '50px',
-                          border: 'none',
-                          borderRadius: '10px',
-                          cursor: 'pointer'
-                        }}
-                      />
-                    </div>
                     <div style={{
-                      padding: '1rem',
-                      borderRadius: '10px',
-                      background: 'linear-gradient(90deg, rgb(234, 92, 3), rgb(255, 225, 0))',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      textAlign: 'center',
-                      color: '#000',
-                      fontWeight: 'bold'
+                      marginTop: '0.5rem',
+                      fontSize: '0.875rem',
+                      color: '#888'
                     }}>
-                      Preview Background
+                      Lower number = Faster scroll | Higher number = Slower scroll (5-60 seconds)
                     </div>
                   </div>
-
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{
-                      display: 'block',
-                      color: '#ccc',
-                      fontWeight: '500',
-                      marginBottom: '0.5rem',
-                      fontSize: '1rem'
-                    }}>
-                      Text Color
-                    </label>
-                    <input
-                      type="color"
-                      value="#000000"
-                      style={{
-                        width: '100%',
-                        height: '50px',
-                        border: 'none',
-                        borderRadius: '10px',
-                        cursor: 'pointer'
-                      }}
-                    />
                   </div>
 
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      color: '#ccc',
-                      fontWeight: '500',
-                      fontSize: '1rem',
-                      cursor: 'pointer'
-                    }}>
-                      <input
-                        type="checkbox"
-                        checked={bannerActive}
-                        onChange={(e) => setBannerActive(e.target.checked)}
-                        style={{
-                          marginRight: '0.5rem',
-                          transform: 'scale(1.2)'
-                        }}
-                      />
-                      Banner Active
-                    </label>
-                  </div>
-
-                  <div style={{
-                    padding: '1rem',
-                    borderRadius: '10px',
-                    background: 'linear-gradient(90deg, rgb(234, 92, 3), rgb(255, 225, 0))',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    textAlign: 'center',
-                    color: '#000',
-                    fontWeight: 'bold',
-                    fontSize: '18px'
-                  }}>
-                    Text Preview: {bannerText.substring(0, 50)}...
-                  </div>
-                </div>
+                
               </div>
 
               {/* Action Buttons */}
@@ -2834,7 +3459,7 @@ const SuperAdminDashboard = () => {
                     transition: 'all 0.3s ease'
                   }}
                 >
-                  Preview
+                  Preview at Top
                 </button>
 
                 <button
@@ -2872,6 +3497,72 @@ const SuperAdminDashboard = () => {
                 </button>
               </div>
 
+              {/* Live Preview */}
+              <div style={{
+                marginTop: '2rem',
+                background: 'rgba(255,255,255,0.07)',
+                padding: '1.5rem',
+                borderRadius: 12,
+                border: '1px solid #eee'
+              }}>
+                <h3 style={{
+                  color: '#22c55e',
+                  fontSize: '1.5rem',
+                  fontWeight: '600',
+                  margin: '0 0 1rem 0',
+                  textAlign: 'center'
+                }}>
+                  🎯 Live Banner Preview
+                </h3>
+                <div style={{
+                  position: 'relative',
+                  width: '100%',
+                  background: `linear-gradient(90deg,${bannerColors.join(',')})`,
+                  padding: '7px 0',
+                  fontSize: bannerFont.size,
+                  fontWeight: bannerFont.weight,
+                  display: bannerActive ? 'flex' : 'none',
+                  alignItems: 'center',
+                  overflow: 'hidden',
+                  borderRadius: '10px',
+                  marginBottom: '1rem'
+                }}>
+                  <div style={{
+                    width: '100%',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    whiteSpace: 'nowrap',
+                    position: 'relative'
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      animation: `scrollText ${bannerScrollSpeed}s linear infinite`,
+                      minWidth: 'fit-content'
+                    }}>
+                      {[...Array(8)].map((_, i) => (
+                        <span key={i} style={{
+                          fontSize: bannerFont.size,
+                          display: 'inline-block',
+                          paddingRight: 10,
+                          color: bannerFont.color,
+                          fontWeight: bannerFont.weight,
+                          whiteSpace: 'nowrap'
+                        }}>{bannerText}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <style>{`
+                    @keyframes scrollText {
+                      from { transform: translateX(0%); }
+                      to { transform: translateX(-50%); }
+                    }
+                  `}</style>
+                </div>
+                <div style={{ textAlign: 'center', color: '#888', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                  💡 This is a live preview of your banner with all styles applied.
+                </div>
+              </div>
+
               {/* Instructions */}
               <div style={{
                 marginTop: '3rem',
@@ -2899,7 +3590,7 @@ const SuperAdminDashboard = () => {
                   <li>Select text color for optimal readability</li>
                   <li>Adjust font size and weight as needed</li>
                   <li>Control scroll speed (lower = faster)</li>
-                  <li>Use "Preview" to see the banner in action</li>
+                  <li>Use "Preview at Top" to see the banner at the top of the page for 5 seconds</li>
                   <li>Click "Save Changes" to apply your settings</li>
                   <li>Use "Reset to Default" to restore original settings</li>
                 </ul>
@@ -3848,11 +4539,13 @@ const SuperAdminDashboard = () => {
         toastOptions={{ 
           style: { 
             zIndex: 99999,
-            background: '#333',
-            color: '#fff',
+            background: '#fff',
+            color: '#333',
             borderRadius: '8px',
             padding: '12px 20px',
-            fontSize: '14px'
+            fontSize: '14px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            border: '1px solid #e5e7eb'
           },
           success: {
             iconTheme: {
@@ -3866,9 +4559,16 @@ const SuperAdminDashboard = () => {
               secondary: '#fff',
             },
           },
+          loading: {
+            iconTheme: {
+              primary: '#9747ff',
+              secondary: '#fff',
+            },
+          },
         }} 
       />
     </div>
+    </>
   );
 };
 

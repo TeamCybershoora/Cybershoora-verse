@@ -299,6 +299,7 @@ main .live-batch-popup .box .redeem {
     text-align: center;
     align-items: center;
     gap: 4rem;
+  
     font-size: clamp(10px, 1.2vw, 1rem);
     position: relative;
 }
@@ -307,7 +308,7 @@ main .live-batch-popup .box .redeem {
     font-size: 3rem !important;
     line-height: 1.1em;
     font-weight: 300 !important;
-    margin-top: -15rem;
+    margin-top: 2rem;
 }
 
 #view1 .middle h1 span {
@@ -345,6 +346,7 @@ main .live-batch-popup .box .redeem {
     display: flex;
     justify-content: center;
     width: 100%;
+    margin-top: 10rem;
 }
 
 #view1 .bottom .mileStones {

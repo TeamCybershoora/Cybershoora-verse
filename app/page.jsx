@@ -174,7 +174,7 @@ export default function HomePage() {
     { src: "https://res.cloudinary.com/dr8razrcd/image/upload/v1753210648/Geeks_for_Geeks_yryfdo.png", alt: "GeeksforGeeks" },
   ];
 
-  // Auto-scroll companies logo slider on mobile with scroll direction based on user scroll
+  // Auto-scroll companies logo slider on mobile - always right to left
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (window.innerWidth > 600) return;
@@ -182,112 +182,34 @@ export default function HomePage() {
     const slider = companiesSliderRef.current;
     if (!slider) return;
     
-    console.log('🎯 Starting auto-scroll for companies logos');
-    console.log('📊 Companies count:', homepageData?.companies?.length || 0);
-    console.log('🔄 Default direction: Right to Left (positive)');
-    
-    let scrollDirection = 1; // Default: right to left (positive for right)
+
     let scrollStep = 2; // Faster scroll for better responsiveness
     let scrollInterval = 20; // Smoother animation
     let autoScroll;
-    let lastScrollY = window.scrollY;
-    let directionChangeTimer = null;
     
-    // Function to start auto-scroll
+    // Function to start auto-scroll - always right to left
     const startAutoScroll = () => {
       autoScroll = setInterval(() => {
         if (!slider) return;
         
-        // For right to left (positive direction) - DEFAULT
-        if (scrollDirection === 1) {
-          if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) {
-            // Reset to beginning for seamless loop
-            slider.scrollLeft = 0;
-            console.log('🔄 Right to Left: Reset to beginning, scrollLeft:', slider.scrollLeft);
-          } else {
-            slider.scrollLeft += scrollStep; // Move right (positive)
-          }
-        }
-        // For left to right (negative direction) - REVERSE (only when user scrolls up)
-        else if (scrollDirection === -1) {
-          if (slider.scrollLeft <= 0) {
-            // Reset to end for seamless loop
-            slider.scrollLeft = slider.scrollWidth - slider.clientWidth;
-            console.log('🔄 Left to Right: Reset to end, scrollLeft:', slider.scrollLeft);
-          } else {
-            slider.scrollLeft -= scrollStep; // Move left (negative)
-          }
+        // Always scroll right to left (positive direction)
+        if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) {
+          // Reset to beginning for seamless loop
+          slider.scrollLeft = 0;
+        } else {
+          slider.scrollLeft += scrollStep; // Move right to left
         }
       }, scrollInterval);
     };
 
-    // Function to change scroll direction
-    const changeScrollDirection = (newDirection) => {
-      if (scrollDirection !== newDirection) {
-        const oldDirection = scrollDirection;
-        scrollDirection = newDirection;
-        console.log('🔄 Scroll direction changed from:', oldDirection === 1 ? 'Right to Left' : 'Left to Right', 'to:', newDirection === 1 ? 'Right to Left' : 'Left to Right');
-        
-        // Set appropriate initial position for new direction
-        if (slider) {
-          if (newDirection === 1) {
-            // For right to left (default), start from beginning
-            slider.scrollLeft = 0;
-            console.log('📍 Right to Left: Position set to beginning:', slider.scrollLeft);
-          } else {
-            // For left to right (reverse), start from end
-            slider.scrollLeft = slider.scrollWidth - slider.clientWidth;
-            console.log('📍 Left to Right: Position set to end:', slider.scrollLeft);
-          }
-        }
-      } else {
-        console.log('ℹ️ Direction unchanged:', newDirection === 1 ? 'Right to Left' : 'Left to Right');
-      }
-    };
-    
-    // Function to handle scroll direction based on page scroll
-    const handleScrollDirection = () => {
-      const currentScrollY = window.scrollY;
-      const scrollDelta = currentScrollY - lastScrollY;
-      
-      // Clear previous timer
-      if (directionChangeTimer) {
-        clearTimeout(directionChangeTimer);
-      }
-      
-      // Only change direction when user scrolls UP (footer to navbar)
-      if (scrollDelta < 0) {
-        changeScrollDirection(-1); // Left to Right
-        console.log('⬆️ User scrolling UP - Logos now scroll Left to Right');
-      } 
-      // When user scrolls DOWN, keep default direction (right to left)
-      else if (scrollDelta > 0) {
-        // Don't change direction, keep default right to left
-        console.log('⬇️ User scrolling DOWN - Logos continue Right to Left');
-      }
-      
-      lastScrollY = currentScrollY;
-      
-      // Auto-revert to default direction after 3 seconds of no scroll
-      directionChangeTimer = setTimeout(() => {
-        changeScrollDirection(1); // Default: Right to Left
-        console.log('🔄 Auto-reverted to default Right to Left direction');
-      }, 3000);
-    };
-    
     // Start auto-scroll after a short delay to ensure DOM is ready
     setTimeout(() => {
-      // Set initial scroll position for right to left (default)
-      if (slider && scrollDirection === 1) {
+      // Set initial scroll position for right to left
+      if (slider) {
         slider.scrollLeft = 0;
-        console.log('📍 Initial scroll position set for Right to Left:', slider.scrollLeft);
       }
       startAutoScroll();
-      console.log('🚀 Auto-scroll started with direction:', scrollDirection === 1 ? 'Right to Left' : 'Left to Right');
     }, 1000);
-    
-    // Listen for page scroll to change direction
-    window.addEventListener('scroll', handleScrollDirection, { passive: true });
     
     // Pause on user interaction with slider
     const pauseScroll = () => {
@@ -295,40 +217,20 @@ export default function HomePage() {
       setTimeout(startAutoScroll, 2000); // Resume after 2 seconds
     };
     
-    // Resume scroll when user stops scrolling the page
+    // Resume scroll when user stops interacting
     const resumeScroll = () => {
       if (!autoScroll) {
         startAutoScroll();
-        console.log('▶️ Auto-scroll resumed');
       }
     };
     
     slider.addEventListener('touchstart', pauseScroll);
     slider.addEventListener('mousedown', pauseScroll);
     
-    // Resume auto-scroll when user stops scrolling the page
-    let scrollTimeout;
-    const handlePageScrollEnd = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        resumeScroll();
-      }, 500); // Resume after 500ms of no page scroll
-    };
-    
-    window.addEventListener('scroll', handlePageScrollEnd, { passive: true });
-    
     return () => {
       if (autoScroll) {
         clearInterval(autoScroll);
       }
-      if (directionChangeTimer) {
-        clearTimeout(directionChangeTimer);
-      }
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-      window.removeEventListener('scroll', handleScrollDirection);
-      window.removeEventListener('scroll', handlePageScrollEnd);
       if (slider) {
         slider.removeEventListener('touchstart', pauseScroll);
         slider.removeEventListener('mousedown', pauseScroll);
@@ -343,7 +245,7 @@ export default function HomePage() {
     const form = event.target;
     const data = new FormData(form);
     // Example: log form data
-    console.log('Request Callback:', Object.fromEntries(data.entries()));
+   
     // Optionally, show a success message or close popup
   }
 
@@ -369,7 +271,7 @@ export default function HomePage() {
               ) : (
                 <>
                   <span style={{ display: 'block' }}>This isn't school. This is</span>
-                  <span style={{ display: 'block', marginTop: 8, color: '#ff6a32' }}>Shoora.Tech</span>
+                  <span style={{ display: 'block', marginTop: 8, color: '#ff6a32' }}>Cybershoora Verse</span>
                 </>
               )}
             </h1>
