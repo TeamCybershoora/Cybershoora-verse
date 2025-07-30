@@ -7,8 +7,7 @@ const nextConfig = {
   poweredByHeader: false,
   generateEtags: true,
   
-  // Font optimization - disable to prevent conflicts with custom fonts
-  optimizeFonts: false,
+
   
   // Image optimization
   images: {
@@ -21,14 +20,16 @@ const nextConfig = {
   
   // Experimental features for performance
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false, // Disabled to prevent critters issues
     optimizePackageImports: ['lucide-react', 'react-icons'],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  },
+  
+  // Turbopack configuration (moved from experimental)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
@@ -53,6 +54,27 @@ const nextConfig = {
           },
         },
       };
+      
+      // Add critters configuration if available
+      try {
+        const Critters = require('critters');
+        config.optimization.minimizer.push(
+          new Critters({
+            preload: 'js-lazy',
+            preloadFonts: true,
+            fonts: true,
+            preload: 'js-lazy',
+            reduceInlineStyles: false,
+            mergeStylesheets: true,
+            inlineThreshold: 0,
+            minimumExternalSize: 0,
+            pruneSource: false,
+            logLevel: 'warn'
+          })
+        );
+      } catch (error) {
+        console.log('Critters not available, skipping CSS optimization');
+      }
     }
     
     // Handle SVG files

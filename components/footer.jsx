@@ -50,11 +50,11 @@ const Footer = () => {
     { href: "/terms-and-conditions/Terms_and_Conditions.pdf", text: "Terms and Condition", external: true },
     { href: "/Pricing&Refund-Policy/Pricing-and-Refund_policy.pdf", text: "Pricing and Refund", external: true },
     { href: "/hire", text: "Hire From Us", external: true },
-    { href: "https://ik.imagekit.io/sheryians/Bug_8EBE0pzVa.pdf", text: "Bug Bounty", external: true }
+    { href: "#", text: "Bug Bounty", external: true }
   ];
 
   const communityOptions = [
-    { href: "https://www.instagram.com/inertiabysheryians", text: "Inertia", external: true },
+    { href: "https://www.instagram.com/cybershoora", text: "Inertia", external: true },
     { href: "https://discord.gg/D23JkFqrgz", text: "Discord", external: true }
   ];
 
