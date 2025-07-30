@@ -9,10 +9,22 @@ services:
       - key: NODE_ENV
         value: production
       - key: NODE_OPTIONS
-        value: --max-old-space-size=1024
+        value: --max-old-space-size=512
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
-      - key: SKIP_STATIC_GENERATION
+      - key: NEXT_FORCE_SERVER_SIDE_RENDERING
         value: "true"
+      - key: NEXT_DISABLE_STATIC_GENERATION
+        value: "true"
+      - key: NEXT_DISABLE_STATIC_OPTIMIZATION
+        value: "true"
+      - key: RENDER_CACHE_DIR
+        value: /opt/render/.cache
+      - key: NEXT_CACHE_DIR
+        value: /opt/render/.cache/next
+    disk:
+      name: cache
+      mountPath: /opt/render/.cache
+      sizeGB: 1
     healthCheckPath: /
     autoDeploy: true 

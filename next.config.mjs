@@ -5,31 +5,34 @@ const nextConfig = {
   images: {
     domains: ['ik.imagekit.io'],
   },
-  // Disable static generation to reduce memory usage
+  // Force server-side rendering for all pages
   output: 'standalone',
-  trailingSlash: false,
-  compress: true,
-  reactStrictMode: false,
-  // Disable static optimization for all pages
+  // Disable static optimization completely
   experimental: {
+    isrMemoryCacheSize: 0, // Disable ISR caching
     serverActions: {
       bodySizeLimit: '1mb',
     },
     workerThreads: false,
     cpus: 1,
     optimizePackageImports: ['react-icons', 'lucide-react'],
-    // Disable static generation
-    staticGenerationAsyncStorage: false,
-    // Reduce memory usage
-    memoryBasedWorkers: false,
   },
-  // Disable ESLint during build to avoid TypeScript parser issues
-  eslint: {
-    ignoreDuringBuilds: true,
+  // Disable all non-essential features
+  swcMinify: true,
+  poweredByHeader: false,
+  reactStrictMode: false,
+  // Disable static generation
+  staticPageGenerationTimeout: 0,
+  // Enable server-side rendering
+  compiler: {
+    removeConsole: true,
   },
-  // Disable TypeScript checking during build to speed up deployment
+  // Disable type checking and linting during build
   typescript: {
     ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
