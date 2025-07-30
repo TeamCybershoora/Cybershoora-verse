@@ -1,8 +1,7 @@
 'use client';
 import { useState } from 'react';
 import LoginForm from '../../components/LoginForm';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from 'react-hot-toast';
 
 export default function LoginPage() {
   const [userType, setUserType] = useState('student');
@@ -69,16 +68,15 @@ export default function LoginPage() {
         </div>
       </div>
       
-      <ToastContainer
+      <Toaster
         position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
+        toastOptions={{
+          duration: 5000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+        }}
       />
     </div>
   );
