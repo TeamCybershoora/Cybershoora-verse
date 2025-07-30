@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "node scripts/build.js",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -16,7 +16,8 @@
     "test:watch": "jest --watch",
     "clean": "node -e \"const fs=require('fs');const path=require('path');['.next','out'].forEach(dir=>{if(fs.existsSync(dir))fs.rmSync(dir,{recursive:true,force:true})})\"",
     "analyze": "ANALYZE=true npm run build",
-    "production": "NODE_ENV=production npm run build && npm start"
+    "production": "NODE_ENV=production npm run build && npm start",
+    "build:vercel": "next build"
   },
   "dependencies": {
     "autoprefixer": "^10.4.21",

@@ -7,6 +7,9 @@ const nextConfig = {
   poweredByHeader: false,
   generateEtags: true,
   
+  // Vercel deployment optimizations
+  output: 'standalone',
+  
 
   
   // Image optimization

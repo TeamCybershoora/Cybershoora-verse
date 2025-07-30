@@ -1,14 +1,21 @@
 {
-  "framework": "nextjs",
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
   "buildCommand": "npm run build",
-  "installCommand": "npm install --legacy-peer-deps",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "framework": "nextjs",
   "functions": {
     "app/api/**/*.js": {
-      "maxDuration": 60
+      "maxDuration": 30
     }
   },
   "env": {
-    "NODE_OPTIONS": "--max-old-space-size=4096"
-  },
-  "regions": ["iad1"]
+    "NODE_ENV": "production"
+  }
 } 
