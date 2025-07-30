@@ -9,7 +9,6 @@ const nextConfig = {
   output: 'standalone',
   // Disable static optimization completely
   experimental: {
-    isrMemoryCacheSize: 0, // Disable ISR caching
     serverActions: {
       bodySizeLimit: '1mb',
     },
@@ -17,12 +16,8 @@ const nextConfig = {
     cpus: 1,
     optimizePackageImports: ['react-icons', 'lucide-react'],
   },
-  // Disable all non-essential features
-  swcMinify: true,
-  poweredByHeader: false,
-  reactStrictMode: false,
-  // Disable static generation
-  staticPageGenerationTimeout: 0,
+  // Increase static generation timeout
+  staticPageGenerationTimeout: 120,
   // Enable server-side rendering
   compiler: {
     removeConsole: true,
