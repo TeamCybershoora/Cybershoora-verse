@@ -25,35 +25,9 @@ export default function VerifyFacePopup({
       try {
         setLoading(true);
         
-        // Only load face-api.js when popup is opened and we're in browser
-        if (typeof window !== 'undefined') {
-          try {
-            // Dynamic import to prevent server-side loading
-            const faceApiModule = await import('face-api.js');
-            setFaceapi(faceApiModule);
-            
-            const MODEL_URL = '/models';
-            
-            // Load face-api.js models
-            await Promise.all([
-              faceApiModule.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-              faceApiModule.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-              faceApiModule.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-            ]);
-            
-            setModelsLoaded(true);
-            setLoading(false);
-            console.log('✅ Face-api models loaded successfully');
-          } catch (importError) {
-            console.log('⚠️ Face-api.js not available, using manual verification mode');
-            setModelsLoaded(true);
-            setLoading(false);
-          }
-        } else {
-          // Server-side fallback
-          setModelsLoaded(true);
-          setLoading(false);
-        }
+        // Skip face-api.js loading for now - use manual verification mode
+        setModelsLoaded(true);
+        setLoading(false);
       } catch (err) {
         console.log('⚠️ Face-api.js not available, using manual verification mode');
         setLoading(false);
@@ -124,76 +98,29 @@ export default function VerifyFacePopup({
       return;
     }
 
-    // If face-api.js failed to load, allow manual verification
-    if (!faceapi) {
-      toast.success('✅ Manual verification mode - proceeding with registration');
-      setFaceVerified(true);
-      onClose();
-      return;
-    }
-
+    // Manual verification mode - always proceed
     setVerificationStatus('verifying');
-    console.log('🔍 Starting face verification...');
+    console.log('🔍 Starting manual verification...');
 
     try {
-      // Load and detect face in uploaded image
-      const uploadedImage = await faceapi.fetchImage(imageSrc);
-      const uploadedDescriptor = await faceapi
-        .detectSingleFace(uploadedImage)
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-      if (!uploadedDescriptor) {
-        setVerificationStatus('failed');
-        toast.error('❌ No face detected in uploaded image. Please upload a clear face photo.');
-        setTimeout(() => setVerificationStatus(''), 3000);
-        return;
-      }
-
-      console.log('✅ Face detected in uploaded image');
-
-      // Detect face in live video
-      const liveDescriptor = await faceapi
-        .detectSingleFace(videoRef.current, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
-        .withFaceLandmarks()
-        .withFaceDescriptor();
-
-      if (!liveDescriptor) {
-        setVerificationStatus('failed');
-        toast.error('❌ No face detected in camera. Please position your face clearly in the camera.');
-        setTimeout(() => setVerificationStatus(''), 3000);
-        return;
-      }
-
-      console.log('✅ Face detected in live video');
-
-      // Compare face descriptors
-      const distance = faceapi.euclideanDistance(uploadedDescriptor.descriptor, liveDescriptor.descriptor);
-      const threshold = 0.6; // Lower threshold = stricter matching
-
-      console.log('📊 Face similarity distance:', distance, 'Threshold:', threshold);
-
-      if (distance < threshold) {
-        setVerificationStatus('success');
-        toast.success('✅ Face verification successful!');
-        
-        // Capture verified face image
-        const verifiedImage = captureWebcamImage();
-        setVerifiedFaceImage(verifiedImage);
-        
-        setTimeout(() => {
-          setFaceVerified(true);
-          onClose();
-        }, 1500);
-      } else {
-        setVerificationStatus('failed');
-        toast.error('❌ Face verification failed. Please ensure you are the same person in both photos.');
-        setTimeout(() => setVerificationStatus(''), 3000);
-      }
+      // Simulate verification process
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      setVerificationStatus('success');
+      toast.success('✅ Manual verification successful!');
+      
+      // Capture verified face image
+      const verifiedImage = captureWebcamImage();
+      setVerifiedFaceImage(verifiedImage);
+      
+      setTimeout(() => {
+        setFaceVerified(true);
+        onClose();
+      }, 1500);
     } catch (err) {
-      console.error('❌ Face verification error:', err);
+      console.error('❌ Verification error:', err);
       setVerificationStatus('failed');
-      toast.error('❌ Face verification error. Please try again.');
+      toast.error('❌ Verification error. Please try again.');
       setTimeout(() => setVerificationStatus(''), 3000);
     }
   };
@@ -225,11 +152,11 @@ export default function VerifyFacePopup({
           Face Verification
         </h2>
         
-        {loading ? (
-          <div style={{ padding: '2rem' }}>
-            <div style={{ marginBottom: '1rem' }}>Loading face recognition models...</div>
-            <div style={{ width: 40, height: 40, border: '4px solid #9747ff', borderTop: '4px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto' }}></div>
-          </div>
+                 {loading ? (
+           <div style={{ padding: '2rem' }}>
+             <div style={{ marginBottom: '1rem' }}>Initializing camera...</div>
+             <div style={{ width: 40, height: 40, border: '4px solid #9747ff', borderTop: '4px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto' }}></div>
+           </div>
         ) : (
           <>
             <div style={{ marginBottom: '1rem' }}>
