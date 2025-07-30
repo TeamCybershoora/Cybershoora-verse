@@ -5,7 +5,7 @@ console.log('🚀 Starting optimized build...');
 // Set environment variables for build optimization
 const buildEnv = {
   ...process.env,
-  NODE_OPTIONS: '--max-old-space-size=4096 --gc-interval=100',
+  NODE_OPTIONS: '--max-old-space-size=4096 --expose-gc',
   NEXT_TELEMETRY_DISABLED: '1',
   NEXT_OPTIMIZE_FONTS: 'false',
   NEXT_OPTIMIZE_IMAGES: 'false',
@@ -23,8 +23,16 @@ try {
   
   console.log('📦 Building Next.js application with optimizations...');
   
-  // Run garbage collection before build
-  global.gc && global.gc();
+  // Run garbage collection periodically during build
+  if (global.gc) {
+    setInterval(() => {
+      try {
+        global.gc();
+      } catch (e) {
+        // Ignore GC errors
+      }
+    }, 5000);
+  }
   
   // Run the build with optimized settings
   execSync('next build', { 

@@ -9,7 +9,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: NODE_OPTIONS
-        value: --max-old-space-size=4096 --gc-interval=100
+        value: --max-old-space-size=4096 --expose-gc
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
       - key: NEXT_OPTIMIZE_FONTS
