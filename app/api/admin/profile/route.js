@@ -1,162 +1,66 @@
 import { NextResponse } from 'next/server';
-import Admin from '@/models/Admin';
-import dbConnect from '@/lib/dbConnect';
-import { verifyAdminAuth } from '@/lib/adminAuth';
-import path from 'path';
-import fs from 'fs';
-import Student from '@/models/Student';
-import Teacher from '@/models/Teacher';
-import Course from '@/models/Course';
-import { uploadToCloudinary } from '@/lib/cloudinary';
-
-export async function POST(request) {
-  try {
-    await dbConnect();
-    
-    // Verify admin authentication
-    const authResult = await verifyAdminAuth(request);
-    if (!authResult.isAuthenticated) {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Authentication required' 
-      }, { status: 401 });
-    }
-
-    const formData = await request.formData();
-    const email = formData.get('email');
-    const name = formData.get('name');
-    const file = formData.get('photo');
-
-    // Only allow the authenticated admin to update their profile
-    if (email !== authResult.admin.email) {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Unauthorized' 
-      }, { status: 401 });
-    }
-
-    let profilePhoto = null;
-    if (file && file.name) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const tempFilePath = path.join(process.cwd(), 'tmp', `${Date.now()}_${file.name}`);
-      if (!fs.existsSync(path.dirname(tempFilePath))) fs.mkdirSync(path.dirname(tempFilePath), { recursive: true });
-      fs.writeFileSync(tempFilePath, buffer);
-      profilePhoto = await uploadToCloudinary(tempFilePath, 'admins');
-      fs.unlinkSync(tempFilePath);
-    }
-
-    const update = { fullName: name };
-    if (profilePhoto) update.profilePhoto = profilePhoto;
-
-    const admin = await Admin.findOneAndUpdate(
-      { email },
-      update,
-      { new: true }
-    );
-
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Admin not found' 
-      }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true, admin });
-  } catch (error) {
-    console.error('Profile update error:', error);
-    return NextResponse.json({ 
-      success: false, 
-      message: 'Profile update failed' 
-    }, { status: 500 });
-  }
-}
+import connectDB from '../../../../lib/dbConnect.js';
+import Admin from '../../../../models/Admin.js';
+import Student from '../../../../models/Student.js';
+import Teacher from '../../../../models/Teacher.js';
+import Course from '../../../../models/Course.js';
 
 export async function GET(request) {
   try {
-    await dbConnect();
+    const { searchParams } = new URL(request.url);
+    const students = searchParams.get('students');
+    const teachers = searchParams.get('teachers');
+    const stats = searchParams.get('stats');
     
-    // Verify admin authentication
-    const authResult = await verifyAdminAuth(request);
-    if (!authResult.isAuthenticated) {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Authentication required' 
-      }, { status: 401 });
-    }
-
-    // If query param ?students=1, return student list
-    const url = new URL(request.url);
-    if (url.searchParams.get('students') === '1') {
-      const course = url.searchParams.get('course');
-      const filter = course ? { course } : {};
-      const studentsRaw = await Student.find(filter, {
-        fullName: 1,
-        email: 1,
-        profilePhoto: 1,
-        idCardNumber: 1,
-        class: 1,
-        course: 1,
-        createdAt: 1,
-        phone: 1,
-        guardianName: 1,
-        guardianPhone: 1,
-        collegeName: 1,
-        customCollege: 1,
-        schoolName: 1,
-        customSchool: 1
-      }).sort({ createdAt: -1 });
-      // Fetch all courses for mapping
-      const allCourses = await Course.find({ status: 'active' });
-      const courseMap = {};
-      for (const c of allCourses) {
-        courseMap[c.title] = c.currentPrice;
-      }
-      // Attach fee to each student
-      const students = studentsRaw.map(s => ({
-        ...s._doc,
-        fee: courseMap[s.course] || '--'
-      }));
-      return NextResponse.json({ success: true, students });
+    await connectDB();
+    
+    if (students) {
+      // Return students data
+      const studentsData = await Student.find({}).lean();
+      return NextResponse.json({
+        success: true,
+        students: studentsData
+      });
     }
     
-    // If query param ?courses=1, return all available courses
-    if (url.searchParams.get('courses') === '1') {
-      const courses = await Course.find({ status: 'active' }).sort({ createdAt: -1 });
-      return NextResponse.json({ success: true, courses });
+    if (teachers) {
+      // Return teachers data
+      const teachersData = await Teacher.find({}).lean();
+      return NextResponse.json({
+        success: true,
+        teachers: teachersData
+      });
     }
     
-    // If query param ?stats=1, return student/teacher counts
-    if (url.searchParams.get('stats') === '1') {
+    if (stats) {
+      // Return stats data
       const studentCount = await Student.countDocuments();
       const teacherCount = await Teacher.countDocuments();
-      return NextResponse.json({ success: true, studentCount, teacherCount });
+      const courseCount = await Course.countDocuments();
+      
+      return NextResponse.json({
+        success: true,
+        studentCount: studentCount,
+        teacherCount: teacherCount,
+        courseCount: courseCount
+      });
     }
     
-    if (url.searchParams.get('teachers') === '1') {
-      const teachers = await Teacher.find({}, {
-        fullName: 1,
-        email: 1,
-        profilePhoto: 1,
-        subject: 1,
-        status: 1,
-        teacherCode: 1,
-        phone: 1,
-        createdAt: 1
-      }).sort({ createdAt: -1 });
-      return NextResponse.json({ success: true, teachers });
-    }
-    
-    // Return the authenticated admin's profile
-    return NextResponse.json({ 
-      success: true, 
-      admin: authResult.admin 
+    // Return admin profile data
+    return NextResponse.json({
+      success: true,
+      admin: {
+        id: 'admin-123',
+        email: 'cybershoora@gmail.com',
+        name: 'Super Admin'
+      }
     });
     
   } catch (error) {
-    console.error('Profile fetch error:', error);
-    return NextResponse.json({ 
-      success: false, 
-      message: 'Failed to fetch profile' 
+    console.error('❌ Admin Profile API error:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Internal server error'
     }, { status: 500 });
   }
 } 

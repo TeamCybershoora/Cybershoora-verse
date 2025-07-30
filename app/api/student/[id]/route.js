@@ -1,39 +1,69 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
-import Student from '@/models/Student';
+import connectDB from '../../../../lib/dbConnect.js';
+import Student from '../../../../models/Student.js';
 
-export async function GET(request, { params }) {
+export async function PUT(request, { params }) {
   try {
-    await dbConnect();
+    await connectDB();
     
-    const { id } = await params;
+    const { id } = params;
+    const body = await request.json();
     
-    if (!id) {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Student ID is required' 
-      }, { status: 400 });
-    }
-
-    const student = await Student.findById(id);
+    // Find and update student
+    const updatedStudent = await Student.findByIdAndUpdate(
+      id,
+      { $set: body },
+      { new: true, runValidators: true }
+    );
     
-    if (!student) {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Student not found' 
+    if (!updatedStudent) {
+      return NextResponse.json({
+        success: false,
+        message: 'Student not found'
       }, { status: 404 });
     }
-
+    
     return NextResponse.json({
       success: true,
-      student: student
+      message: 'Student updated successfully',
+      student: updatedStudent
     });
-
+    
   } catch (error) {
-    console.error('Error fetching student:', error);
-    return NextResponse.json({ 
-      success: false, 
-      message: 'Internal server error' 
+    console.error('❌ Student update error:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to update student'
     }, { status: 500 });
   }
 }
+
+export async function DELETE(request, { params }) {
+  try {
+    await connectDB();
+    
+    const { id } = params;
+    
+    // Find and delete student
+    const deletedStudent = await Student.findByIdAndDelete(id);
+    
+    if (!deletedStudent) {
+      return NextResponse.json({
+        success: false,
+        message: 'Student not found'
+      }, { status: 404 });
+    }
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Student deleted successfully'
+    });
+    
+  } catch (error) {
+    console.error('❌ Student deletion error:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to delete student'
+    }, { status: 500 });
+  }
+} 

@@ -1,44 +1,37 @@
-import { deleteFromCloudinary } from '@/lib/cloudinary';
+import { NextResponse } from 'next/server';
+import { deleteFromCloudinary } from '../../../../lib/cloudinary.js';
 
-export async function POST(req) {
+export async function POST(request) {
   try {
-    const { imageUrl } = await req.json();
+    console.log('🗑️ Delete Cloudinary API called');
+    
+    const body = await request.json();
+    const { imageUrl } = body;
     
     if (!imageUrl) {
-      return new Response(JSON.stringify({ 
-        error: 'Image URL is required' 
-      }), { status: 400 });
+      return NextResponse.json({
+        success: false,
+        message: 'Image URL is required'
+      }, { status: 400 });
     }
     
-    console.log('Deleting image from Cloudinary:', imageUrl);
+    console.log('🗑️ Deleting from Cloudinary:', imageUrl);
     
     // Delete from Cloudinary
-    const result = await deleteFromCloudinary(imageUrl);
+    await deleteFromCloudinary(imageUrl);
     
-    console.log('Cloudinary delete result:', result);
+    console.log('✅ Media deleted from Cloudinary successfully');
     
-    return new Response(JSON.stringify({ 
+    return NextResponse.json({
       success: true,
-      message: 'Image deleted from Cloudinary successfully',
-      result
-    }), { 
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      message: 'Media deleted from Cloudinary successfully'
     });
     
   } catch (error) {
-    console.error('Error deleting from Cloudinary:', error);
-    
-    return new Response(JSON.stringify({ 
-      error: error.message || 'Failed to delete from Cloudinary',
-      success: false
-    }), { 
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    console.error('❌ Delete Cloudinary API error:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to delete media from Cloudinary'
+    }, { status: 500 });
   }
 } 

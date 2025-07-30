@@ -1,68 +1,67 @@
 import { NextResponse } from 'next/server';
+import connectDB from '../../../../lib/dbConnect.js';
 import Admin from '../../../../models/Admin.js';
-import dbConnect from '../../../../lib/dbConnect.js';
-import jwt from 'jsonwebtoken';
 
-export async function POST(req) {
+export async function POST(request) {
   try {
-    await dbConnect();
-    const { email, password } = await req.json();
+    console.log('🔐 Admin Login API called');
     
-    const admin = await Admin.findOne({ email });
+    const body = await request.json();
+    const { email, password } = body;
+    
+    console.log('📝 Admin login request:', { email, hasPassword: !!password });
+    
+    if (!email || !password) {
+      console.log('❌ Missing required fields');
+      return NextResponse.json({ 
+        success: false, 
+        message: 'Email and password are required' 
+      }, { status: 400 });
+    }
+    
+    await connectDB();
+    console.log('✅ Database connected');
+    
+    // Find admin by email
+    const admin = await Admin.findOne({ email: email.toLowerCase() });
+    
     if (!admin) {
+      console.log('❌ Admin not found');
       return NextResponse.json({ 
         success: false, 
-        message: "Invalid admin email" 
+        message: 'Invalid credentials' 
       }, { status: 401 });
     }
     
-    if (password !== admin.password) {
+    // Check password
+    if (admin.password !== password) {
+      console.log('❌ Invalid password');
       return NextResponse.json({ 
         success: false, 
-        message: "Incorrect password" 
+        message: 'Invalid credentials' 
       }, { status: 401 });
     }
-
-    // Create JWT token
-    const token = jwt.sign(
-      { 
-        adminId: admin._id, 
-        email: admin.email,
-        role: admin.role 
-      },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '7d' } // 1 week expiration
-    );
-
-    // Create response
-    const response = NextResponse.json({
+    
+    console.log('✅ Admin login successful:', { 
+      id: admin._id, 
+      email: admin.email 
+    });
+    
+    return NextResponse.json({
       success: true,
       message: 'Login successful',
       admin: {
-        _id: admin._id,
+        id: admin._id,
         email: admin.email,
-        fullName: admin.fullName,
-        role: admin.role,
-        profilePhoto: admin.profilePhoto
+        name: admin.name
       }
     });
-
-    // Set session cookie with 1-week expiration
-    response.cookies.set('adminToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-      path: '/'
-    });
-
-    return response;
-
+    
   } catch (error) {
-    console.error('Login error:', error);
-    return NextResponse.json({
-      success: false,
-      message: 'Login failed'
+    console.error('❌ Admin Login API error:', error);
+    return NextResponse.json({ 
+      success: false, 
+      message: 'Internal server error' 
     }, { status: 500 });
   }
 } 

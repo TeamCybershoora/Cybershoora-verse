@@ -24,8 +24,10 @@ export default function EditHomepage() {
   const [imagePreview, setImagePreview] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [newCompany, setNewCompany] = useState({ src: '', alt: '' });
+  const [newCompany, setNewCompany] = useState({ src: '', title: '' });
   const [newCompanyUploading, setNewCompanyUploading] = useState(false);
+  const [selectedLogos, setSelectedLogos] = useState([]); // Array of selected files
+  const [logoPreview, setLogoPreview] = useState(''); // Preview URL for selected logo
   const fileInputRef = React.useRef(null);
   // Add a ref to reset the file input if needed
   const heroImageInputRef = useRef();
@@ -35,9 +37,27 @@ export default function EditHomepage() {
     fetch('/api/admin/homepage')
       .then(res => res.json())
       .then(data => {
-        if (!data.heroMedia) data.heroMedia = { type: 'image', url: '' };
-        setForm(data);
-        if (data.heroMedia && data.heroMedia.url) setImagePreview(data.heroMedia.url);
+        // Ensure all required arrays and objects exist
+        const safeData = {
+          mainHeadingWhite: data.mainHeadingWhite || '',
+          mainHeadingOrange: data.mainHeadingOrange || '',
+          typewriterTexts: data.typewriterTexts || [],
+          stats: data.stats || { studentsTaught: '', instructors: '', liveProjects: '' },
+          heroImageText: data.heroImageText || '',
+          heroImageTextHighlight: data.heroImageTextHighlight || '',
+          heroMedia: data.heroMedia || { type: 'image', url: '' },
+          companies: data.companies || [],
+          faqs: data.faqs || []
+        };
+        
+        setForm(safeData);
+        if (safeData.heroMedia && safeData.heroMedia.url) {
+          setImagePreview(safeData.heroMedia.url);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Failed to load homepage data:', error);
         setLoading(false);
       });
   }, []);
@@ -119,77 +139,100 @@ export default function EditHomepage() {
     setForm(f => ({ ...f, faqs: f.faqs.map((faq, i) => i === idx ? { ...faq, [field]: value } : faq) }));
   };
 
+  // 🏢 COMPANY LOGOS - COMPLETE LOGIC
   const handleCompanyAdd = async () => {
-    if (!newCompany.src.trim() || !newCompany.title.trim()) {
-      showToastMessage('Please fill both logo source and company name.', 'error');
+    // Validation
+    if (selectedLogos.length === 0 && !newCompany.src.trim()) {
+      showToastMessage('Please select files or provide a logo URL.', 'error');
+      return;
+    }
+
+    if (selectedLogos.length === 0 && !newCompany.title.trim()) {
+      showToastMessage('Please provide a company name.', 'error');
       return;
     }
 
     try {
-      let finalUrl = newCompany.src;
+      setNewCompanyUploading(true);
       
-      // If it's a blob URL (file upload), upload to Cloudinary first
-      if (newCompany.src.startsWith('blob:')) {
-        setNewCompanyUploading(true);
+      if (selectedLogos.length > 0) {
+        // 📁 UPLOAD MULTIPLE FILES TO CLOUDINARY
+        const uploadedLogos = [];
         
-        console.log('Debug - companyFileInputRef:', companyFileInputRef.current);
-        console.log('Debug - files:', companyFileInputRef.current?.files);
+        for (let i = 0; i < selectedLogos.length; i++) {
+          const file = selectedLogos[i];
+          
+          // Upload to Cloudinary with correct preset
+          const uploadedUrl = await uploadImageToCloudinary(file, 'company');
+          
+          // Create company object
+          const title = newCompany.title || file.name.replace(/\.[^/.]+$/, "");
+          uploadedLogos.push({
+            src: uploadedUrl,
+            alt: title,
+            title: title
+          });
+        }
         
-        // Get the file from the file input using ref
-        if (!companyFileInputRef.current || !companyFileInputRef.current.files[0]) {
-          showToastMessage('No file selected for upload. Please select a file first.', 'error');
+        // 💾 ADD TO FORM STATE (will be saved to database)
+        setForm(f => {
+          const updatedForm = { 
+            ...f, 
+            companies: [...(f.companies || []), ...uploadedLogos] 
+          };
+          return updatedForm;
+        });
+        
+        showToastMessage(`${uploadedLogos.length} company logo(s) uploaded to Cloudinary and added!`, 'success');
+        
+      } else {
+        // 🔗 HANDLE MANUAL URL INPUT
+        let finalUrl = newCompany.src.trim();
+        
+        // Validate Cloudinary URL
+        if (!finalUrl.includes('cloudinary.com')) {
+          showToastMessage('Please upload a file or provide a valid Cloudinary URL.', 'error');
           return;
         }
         
-        const file = companyFileInputRef.current.files[0];
-        console.log('Debug - Uploading company logo:', { fileName: file.name, fileType: file.type });
-        finalUrl = await uploadImageToCloudinary(file, 'company');
-        console.log('Debug - Upload completed, URL:', finalUrl);
+        // Add to form state
+        setForm(f => {
+          const updatedForm = { 
+            ...f, 
+            companies: [...(f.companies || []), { 
+              src: finalUrl, 
+              alt: newCompany.title, 
+              title: newCompany.title 
+            }] 
+          };
+          return updatedForm;
+        });
         
-        // Extract filename without extension for title if not set
-        if (!newCompany.title || newCompany.title === file.name.replace(/\.[^/.]+$/, "")) {
-          const fileName = file.name.replace(/\.[^/.]+$/, "");
-          setNewCompany(nc => ({ ...nc, title: fileName }));
-        }
+        showToastMessage('Company logo added successfully!', 'success');
       }
       
-      // Add to companies list
-      setForm(f => {
-        const updatedForm = { 
-          ...f, 
-          companies: [...(f.companies || []), { 
-            src: finalUrl, 
-            alt: newCompany.title, 
-            title: newCompany.title 
-          }] 
-        };
-        console.log('Debug - Company added to form:', updatedForm.companies);
-        return updatedForm;
-      });
-      
-      // Reset form
+      // 🧹 RESET FORM
       setNewCompany({ src: '', title: '' });
+      setSelectedLogos([]);
+      setLogoPreview('');
       if (companyFileInputRef.current) {
         companyFileInputRef.current.value = '';
       }
       
-      showToastMessage('Company logo added successfully!', 'success');
     } catch (err) {
-      console.error('Company logo add failed:', err);
+      console.error('❌ Company logo add failed:', err);
       showToastMessage('Failed to add company logo: ' + (err.message || 'Unknown error'), 'error');
     } finally {
       setNewCompanyUploading(false);
     }
   };
+  // 🗑️ COMPANY LOGO DELETE - COMPLETE LOGIC
   const handleCompanyRemove = async (idx) => {
     try {
       const companyToRemove = form.companies[idx];
       
-      // Check if it's a Cloudinary URL (not a blob URL or external URL)
+      // Check if it's a Cloudinary URL
       if (companyToRemove.src && companyToRemove.src.includes('cloudinary.com')) {
-        console.log('Deleting company logo from Cloudinary:', companyToRemove.src);
-        console.log('Company title:', companyToRemove.title);
-        
         // Call API to delete from Cloudinary
         const response = await fetch('/api/admin/delete-cloudinary', {
           method: 'POST',
@@ -202,24 +245,25 @@ export default function EditHomepage() {
         });
         
         const responseData = await response.json();
-        console.log('Company logo delete API response:', responseData);
         
         if (!response.ok) {
-          console.error('Failed to delete from Cloudinary');
+          console.error('❌ Failed to delete from Cloudinary');
           showToastMessage('Logo removed from page but failed to delete from Cloudinary', 'error');
         } else {
-          console.log('Successfully deleted from Cloudinary');
           showToastMessage('Company logo removed from page and Cloudinary!', 'success');
         }
       } else {
         showToastMessage('Company logo removed from page!', 'success');
       }
       
-      // Remove from form state
-      setForm(f => ({ ...f, companies: f.companies.filter((_, i) => i !== idx) }));
+      // 💾 Remove from form state (will be saved to database)
+      setForm(f => ({ 
+        ...f, 
+        companies: f.companies.filter((_, i) => i !== idx) 
+      }));
       
     } catch (error) {
-      console.error('Error removing company logo:', error);
+      console.error('❌ Error removing company logo:', error);
       showToastMessage('Failed to remove company logo', 'error');
     }
   };
@@ -240,17 +284,16 @@ export default function EditHomepage() {
     }
   };
 
-  // Upload image to Cloudinary and return URL
+  // ☁️ UPLOAD TO CLOUDINARY - COMPLETE LOGIC
   async function uploadImageToCloudinary(file, type) {
-    console.log('Starting upload to Cloudinary:', { fileName: file.name, fileType: file.type, uploadType: type });
-    
     const formData = new FormData();
     formData.append('image', file);
     formData.append('type', type);
     
-    console.log('Debug - FormData created with type:', type);
+    // Use different API endpoints based on type
+    const uploadEndpoint = type === 'company' ? '/api/admin/company-logo/upload' : '/api/admin/homepage/upload';
     
-    const resp = await fetch('/api/admin/homepage/upload', {
+    const resp = await fetch(uploadEndpoint, {
       method: 'POST',
       body: formData
     });
@@ -258,16 +301,15 @@ export default function EditHomepage() {
     const data = await resp.json();
     
     if (!resp.ok) {
-      console.error('Upload API error:', data);
+      console.error('❌ Upload API error:', data);
       throw new Error(data.error || 'Upload failed');
     }
     
     if (!data.url) {
-      console.error('No URL returned from upload API:', data);
+      console.error('❌ No URL returned from upload API:', data);
       throw new Error('No URL returned from upload');
     }
     
-    console.log('Upload successful, URL:', data.url);
     return data.url;
   }
 
@@ -316,19 +358,31 @@ export default function EditHomepage() {
     }
   };
 
-  // COMPANY LOGO UPLOAD
+  // 📁 COMPANY LOGO FILE SELECTION - COMPLETE LOGIC
   const handleCompanyLogoFile = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
       setError('');
-      // Show instant preview
-      const previewUrl = URL.createObjectURL(file);
+      
+      // Store selected files
+      setSelectedLogos(files);
+      
+      // Show preview of first file
+      const firstFile = files[0];
+      const previewUrl = URL.createObjectURL(firstFile);
+      setLogoPreview(previewUrl);
+      
+      // Auto-set title for first file if not provided
       setNewCompany(nc => ({ 
         ...nc, 
-        src: previewUrl,
-        title: nc.title || file.name.replace(/\.[^/.]+$/, "") // Auto-set title if empty
+        title: nc.title || firstFile.name.replace(/\.[^/.]+$/, "")
       }));
-      showToastMessage('File selected! Click "Add Logo" to upload to Cloudinary.', 'success');
+      
+      if (files.length === 1) {
+        showToastMessage('File selected! Click "Add Logo" to upload to Cloudinary.', 'success');
+      } else {
+        showToastMessage(`${files.length} files selected! Click "Add Logo" to upload all to Cloudinary.`, 'success');
+      }
     }
   };
 
@@ -342,22 +396,38 @@ export default function EditHomepage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    setSaving(true); setError(''); setSuccess('');
-    // No file upload, just use heroMedia.url
-    const payload = { ...form };
-    console.log('Debug - Saving homepage data:', payload);
-    console.log('Debug - Companies count:', payload.companies?.length || 0);
-    const resp = await fetch('/api/admin/homepage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (resp.ok) {
-      showToastMessage('Homepage successfully updated!', 'success');
-    } else {
-      showToastMessage('Failed to save homepage.', 'error');
+    setSaving(true); 
+    setError(''); 
+    setSuccess('');
+    
+    try {
+      // Prepare payload
+      const payload = { ...form };
+      
+      const resp = await fetch('/api/admin/homepage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await resp.json();
+      
+      if (resp.ok && data.success) {
+        showToastMessage('Homepage successfully updated!', 'success');
+        setSuccess('Homepage updated successfully!');
+      } else {
+        const errorMessage = data.message || 'Failed to save homepage.';
+        showToastMessage(errorMessage, 'error');
+        setError(errorMessage);
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      const errorMessage = 'Network error. Please try again.';
+      showToastMessage(errorMessage, 'error');
+      setError(errorMessage);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   // Helper to check YouTube/Vimeo
@@ -676,6 +746,7 @@ export default function EditHomepage() {
                     accept={form.heroMedia?.type === 'image' ? 'image/*' : 'video/*'}
                     style={{ display: 'none' }}
                     onChange={handleHeroMediaFileChange}
+                    value=""
                   />
                 </label>
                 {/* Unified preview for image, video, or YouTube */}
@@ -762,7 +833,7 @@ export default function EditHomepage() {
             <span style={{ color: '#9747ff', fontWeight: 600 }}>Folder:</span> companies-logo (auto-created in preset)
           </div>
           <ul style={{ display: 'flex', flexWrap: 'wrap', gap: 24, padding: 0, listStyle: 'none', marginBottom: 8 }}>
-            {(form.companies || []).map((c, i) => (
+            {(form.companies || []).filter(logo => logo.src && logo.src.includes('cloudinary.com')).map((c, i) => (
               <li key={i} style={{
                 background: '#232428',
                 borderRadius: 10,
@@ -853,7 +924,9 @@ export default function EditHomepage() {
                 ref={companyFileInputRef}
                 type="file" 
                 accept="image/*" 
-                onChange={handleCompanyLogoFile} 
+                multiple
+                onChange={handleCompanyLogoFile}
+                value=""
                 style={{ 
                   position: 'absolute',
                   opacity: 0,
@@ -895,7 +968,7 @@ export default function EditHomepage() {
                 }}
               >
                 <i className="ri-image-add-line" style={{ fontSize: '16px' }}></i>
-                Choose Logo
+                {selectedLogos.length > 0 ? `${selectedLogos.length} File(s)` : 'Choose Logo(s)'}
               </button>
             </div>
             {newCompanyUploading && <span style={{ color: '#9747ff' }}>Uploading...</span>}
@@ -903,17 +976,17 @@ export default function EditHomepage() {
               type="button" 
               onClick={handleCompanyAdd} 
               className="admin-btn-primary"
-              disabled={!newCompany.src || !newCompany.title}
+              disabled={newCompanyUploading || (selectedLogos.length === 0 && !newCompany.src)}
             >
-              Add Logo
+              {newCompanyUploading ? 'Uploading...' : selectedLogos.length > 0 ? `Add ${selectedLogos.length} Logo${selectedLogos.length > 1 ? 's' : ''}` : 'Add Logo'}
             </button>
           </div>
           
           {/* Preview Section */}
-          {newCompany.src && (
+          {(logoPreview || newCompany.src) && (
             <div style={{ marginTop: 16, padding: 16, background: '#1a1a1a', borderRadius: 8, border: '1px solid #333' }}>
               <div style={{ color: '#9747ff', fontSize: 14, marginBottom: 8, fontWeight: 600 }}>
-                Logo Preview: {newCompany.src.startsWith('blob:') ? '(File Upload)' : '(URL Input)'}
+                Logo Preview: {selectedLogos.length > 0 ? `(${selectedLogos.length} File${selectedLogos.length > 1 ? 's' : ''} Selected)` : newCompany.src.startsWith('blob:') ? '(File Upload)' : '(URL Input)'}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 <div style={{
@@ -930,7 +1003,7 @@ export default function EditHomepage() {
                   padding: 8
                 }}>
                   <img 
-                    src={newCompany.src} 
+                    src={logoPreview || newCompany.src} 
                     alt={newCompany.title || 'Company logo'} 
                     style={{ 
                       height: 60,

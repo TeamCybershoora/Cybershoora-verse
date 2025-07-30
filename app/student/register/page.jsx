@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
-import FormField from '@/components/FormField';
-import FormFieldPassword from '@/components/FormFieldPassword';
-import colleges from '@/data/colleges.json';
-import schools from '@/data/schools.json';
+import FormField from '../../../components/FormField';
+import FormFieldPassword from '../../../components/FormFieldPassword';
+import colleges from '../../../data/colleges.json';
+import schools from '../../../data/schools.json';
 import { signIn } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 

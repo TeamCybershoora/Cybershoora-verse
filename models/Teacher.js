@@ -15,6 +15,7 @@ const TeacherSchema = new mongoose.Schema({
   password: String,
   profilePhoto: String,
   status: { type: String, default: 'pending' }, // e.g. 'pending', 'approved'
+  isDisabled: { type: Boolean, default: false }, // for locking teacher profile
   verifiedFaceImage: { type: String, default: '' },
   teacherCode: { type: String, unique: true },
   

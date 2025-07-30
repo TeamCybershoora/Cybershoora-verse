@@ -1,195 +1,239 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/dbConnect';
-import Course from '@/models/Course';
-import path from 'path';
-import fs from 'fs';
-import { uploadToCloudinary, deleteFromCloudinary } from '@/lib/cloudinary';
+import connectDB from '../../../lib/dbConnect.js';
+import Course from '../../../models/Course.js';
 
 export async function GET() {
   try {
     await connectDB();
-    const courses = await Course.find({ status: 'active' }).sort({ createdAt: -1 });
-    // Transform database courses to match the expected format
-    const formattedCourses = courses.map(course => ({
-      _id: course._id, // Ensure _id is included
-      image: course.image,
-      badge: course.badge,
-      title: course.title,
-      duration: course.duration,
-      languages: course.languages,
-      originalPrice: course.originalPrice,
-      currentPrice: course.currentPrice,
-      discount: course.discount,
-      link: course.link,
-      details: course.details,
-      technologies: course.technologies, // Add technologies to API response
-      teacherName: course.teacherName, // Add teacher name
-      createdAt: course.createdAt, // Add creation timestamp
-      updatedAt: course.updatedAt, // Add update timestamp
-      status: course.status // Add status
-    }));
     
-    return NextResponse.json(formattedCourses);
+    const courses = await Course.find({}).limit(6).lean();
+    
+    return NextResponse.json(courses);
+    
   } catch (error) {
-    console.error('Error fetching courses:', error);
+    console.error('❌ Courses API error:', error);
     return NextResponse.json([], { status: 500 });
   }
 }
 
-export async function POST(req) {
+export async function POST(request) {
   try {
     await connectDB();
-    const formData = await req.formData();
-
-    let imageUrl = '';
-    const imageField = formData.get('image');
-    if (imageField && typeof imageField === 'object' && imageField.name) {
-      // It's a File object
-      const buffer = Buffer.from(await imageField.arrayBuffer());
-      const tempFilePath = path.join(process.cwd(), 'tmp', `${Date.now()}_${imageField.name}`);
-      if (!fs.existsSync(path.dirname(tempFilePath))) fs.mkdirSync(path.dirname(tempFilePath), { recursive: true });
-      fs.writeFileSync(tempFilePath, buffer);
-      imageUrl = await uploadToCloudinary(tempFilePath, 'courses');
-      fs.unlinkSync(tempFilePath);
-    } else if (typeof imageField === 'string') {
-      // It's a direct URL
-      imageUrl = imageField;
-    }
-
-    let technologies = formData.get('technologies');
-    if (typeof technologies === 'string') {
-      technologies = technologies.split(',').map(t => t.trim()).filter(Boolean);
-    }
-
-    const courseData = {
-      title: formData.get('title'),
-      duration: formData.get('duration'),
-      languages: formData.get('languages') || '',
-      originalPrice: formData.get('originalPrice'),
-      currentPrice: formData.get('currentPrice'),
-      discount: formData.get('discount'),
-      details: formData.get('details') || '',
-      image: imageUrl,
-      badge: formData.get('badge') || 'INSTITUTE',
-      link: formData.get('link') || '#',
-      status: 'active',
-      technologies // always array
-    };
-    // Add teacherName if present
-    const teacherName = formData.get('teacherName');
-    if (teacherName) {
-      courseData.teacherName = teacherName;
-    }
-
-    const course = new Course(courseData);
-    await course.save();
-
-    return NextResponse.json({ success: true, course });
-  } catch (error) {
-    console.error('Error creating course:', error);
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
-  }
-} 
-
-export async function PATCH(req) {
-  try {
-    await connectDB();
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get('id');
     
-    if (!id) {
-      return NextResponse.json({ success: false, message: 'Course id is required' }, { status: 400 });
-    }
-
-    const formData = await req.formData();
+    const formData = await request.formData();
+    
+    // Extract course data
+    const courseData = {
+      title: formData.get('title') || '',
+      duration: formData.get('duration') || '',
+      languages: formData.get('languages') || '',
+      originalPrice: formData.get('originalPrice') || '',
+      currentPrice: formData.get('currentPrice') || '',
+      discount: formData.get('discount') || '',
+      details: formData.get('details') || '',
+      teacherName: formData.get('teacherName') || '',
+      technologies: formData.get('technologies') ? formData.get('technologies').split(',') : []
+    };
     
     // Handle image upload
-    let imageUrl = '';
-    const imageField = formData.get('image');
-    if (imageField && typeof imageField === 'object' && imageField.name) {
-      // It's a File object
-      const buffer = Buffer.from(await imageField.arrayBuffer());
-      const tempFilePath = path.join(process.cwd(), 'tmp', `${Date.now()}_${imageField.name}`);
-      if (!fs.existsSync(path.dirname(tempFilePath))) fs.mkdirSync(path.dirname(tempFilePath), { recursive: true });
-      fs.writeFileSync(tempFilePath, buffer);
-      imageUrl = await uploadToCloudinary(tempFilePath, 'courses');
-      fs.unlinkSync(tempFilePath);
-    } else if (typeof imageField === 'string') {
-      // It's a direct URL
-      imageUrl = imageField;
+    const imageFile = formData.get('image');
+    if (imageFile instanceof File) {
+      // Upload to Cloudinary
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      
+      const os = require('os');
+      const path = require('path');
+      const tempFilePath = path.join(os.tmpdir(), imageFile.name);
+      require('fs').writeFileSync(tempFilePath, buffer);
+      
+      try {
+        const { uploadToCloudinary } = await import('../../../lib/cloudinary.js');
+                 const uploadedUrl = await uploadToCloudinary(
+           tempFilePath,
+           'cybershoora_courses/courses-image',
+           'cybershoora_courses'
+         );
+        courseData.image = uploadedUrl;
+        
+        // Clean up temp file
+        require('fs').unlinkSync(tempFilePath);
+      } catch (uploadError) {
+        console.error('❌ Course image upload failed:', uploadError);
+        return NextResponse.json({
+          success: false,
+          message: 'Failed to upload course image'
+        }, { status: 500 });
+      }
+    } else if (typeof imageFile === 'string' && imageFile.trim()) {
+      courseData.image = imageFile.trim();
     }
-
-    // Handle technologies
-    let technologies = formData.get('technologies');
-    if (typeof technologies === 'string') {
-      technologies = technologies.split(',').map(t => t.trim()).filter(Boolean);
-    }
-
-    // Prepare update data
-    const updateData = {
-      title: formData.get('title'),
-      duration: formData.get('duration'),
-      languages: formData.get('languages') || '',
-      originalPrice: formData.get('originalPrice'),
-      currentPrice: formData.get('currentPrice'),
-      discount: formData.get('discount'),
-      details: formData.get('details') || '',
-      badge: formData.get('badge') || 'INSTITUTE',
-      link: formData.get('link') || '#',
-      technologies
-    };
-
-    // Add image if provided
-    if (imageUrl) {
-      updateData.image = imageUrl;
-    }
-
-    // Add teacherName if present
-    const teacherName = formData.get('teacherName');
-    if (teacherName !== null) {
-      updateData.teacherName = teacherName;
-    }
-
-    const updatedCourse = await Course.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedCourse) {
-      return NextResponse.json({ success: false, message: 'Course not found' }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true, course: updatedCourse });
+    
+    // Create course
+    const course = await Course.create(courseData);
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Course added successfully',
+      course: course
+    });
+    
   } catch (error) {
-    console.error('Error updating course:', error);
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    console.error('❌ Course creation error:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to create course'
+    }, { status: 500 });
   }
 }
 
-export async function DELETE(req) {
+export async function PUT(request) {
   try {
     await connectDB();
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get('id');
-    if (!id) {
-      return NextResponse.json({ success: false, message: 'Course id is required' }, { status: 400 });
+    
+    const { searchParams } = new URL(request.url);
+    const courseId = searchParams.get('id');
+    
+    if (!courseId) {
+      return NextResponse.json({
+        success: false,
+        message: 'Course ID is required'
+      }, { status: 400 });
     }
-    const deleted = await Course.findByIdAndDelete(id);
-    if (!deleted) {
-      return NextResponse.json({ success: false, message: 'Course not found' }, { status: 404 });
+    
+    // Get existing course to check old image
+    const existingCourse = await Course.findById(courseId);
+    if (!existingCourse) {
+      return NextResponse.json({
+        success: false,
+        message: 'Course not found'
+      }, { status: 404 });
     }
-    // Delete image from Cloudinary if it exists
-    if (deleted.image && deleted.image.startsWith('http')) {
+    
+    const formData = await request.formData();
+    
+    // Extract course data
+    const courseData = {
+      title: formData.get('title') || '',
+      duration: formData.get('duration') || '',
+      languages: formData.get('languages') || '',
+      originalPrice: formData.get('originalPrice') || '',
+      currentPrice: formData.get('currentPrice') || '',
+      discount: formData.get('discount') || '',
+      details: formData.get('details') || '',
+      teacherName: formData.get('teacherName') || '',
+      technologies: formData.get('technologies') ? formData.get('technologies').split(',') : []
+    };
+    
+    // Handle image upload
+    const imageFile = formData.get('image');
+    if (imageFile instanceof File) {
+      // Delete old image from Cloudinary if it exists
+      if (existingCourse.image && existingCourse.image.includes('cloudinary.com')) {
+        try {
+          const { deleteFromCloudinary } = await import('../../../lib/cloudinary.js');
+          await deleteFromCloudinary(existingCourse.image);
+        } catch (deleteError) {
+          console.error('❌ Failed to delete old course image from Cloudinary:', deleteError);
+        }
+      }
+      
+      // Upload new image to Cloudinary
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      
+      const os = require('os');
+      const path = require('path');
+      const tempFilePath = path.join(os.tmpdir(), imageFile.name);
+      require('fs').writeFileSync(tempFilePath, buffer);
+      
       try {
-        await deleteFromCloudinary(deleted.image);
-      } catch (err) {
-        console.error('Error deleting image from Cloudinary:', err);
+        const { uploadToCloudinary } = await import('../../../lib/cloudinary.js');
+        const uploadedUrl = await uploadToCloudinary(
+          tempFilePath,
+          'cybershoora_courses/courses-image',
+          'cybershoora_courses'
+        );
+        courseData.image = uploadedUrl;
+        
+        // Clean up temp file
+        require('fs').unlinkSync(tempFilePath);
+      } catch (uploadError) {
+        console.error('❌ Course image upload failed:', uploadError);
+        return NextResponse.json({
+          success: false,
+          message: 'Failed to upload course image'
+        }, { status: 500 });
+      }
+    } else if (typeof imageFile === 'string' && imageFile.trim()) {
+      courseData.image = imageFile.trim();
+    }
+    
+    // Update course
+    const updatedCourse = await Course.findByIdAndUpdate(courseId, courseData, { new: true });
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Course updated successfully',
+      course: updatedCourse
+    });
+    
+  } catch (error) {
+    console.error('❌ Course update error:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to update course'
+    }, { status: 500 });
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    await connectDB();
+    
+    const { searchParams } = new URL(request.url);
+    const courseId = searchParams.get('id');
+    
+    if (!courseId) {
+      return NextResponse.json({
+        success: false,
+        message: 'Course ID is required'
+      }, { status: 400 });
+    }
+    
+    // Get course before deleting to get image URL
+    const courseToDelete = await Course.findById(courseId);
+    
+    if (!courseToDelete) {
+      return NextResponse.json({
+        success: false,
+        message: 'Course not found'
+      }, { status: 404 });
+    }
+    
+    // Delete course from database
+    const deletedCourse = await Course.findByIdAndDelete(courseId);
+    
+    // Delete image from Cloudinary if it exists
+    if (courseToDelete.image && courseToDelete.image.includes('cloudinary.com')) {
+      try {
+        const { deleteFromCloudinary } = await import('../../../lib/cloudinary.js');
+        await deleteFromCloudinary(courseToDelete.image);
+      } catch (deleteError) {
+        console.error('❌ Failed to delete course image from Cloudinary:', deleteError);
       }
     }
-    return NextResponse.json({ success: true });
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Course deleted successfully'
+    });
+    
   } catch (error) {
-    console.error('Error deleting course:', error);
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    console.error('❌ Course deletion error:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to delete course'
+    }, { status: 500 });
   }
 } 

@@ -85,6 +85,7 @@ const SuperAdminDashboard = () => {
   });
   const [viewDetailsModal, setViewDetailsModal] = useState({ open: false, course: null });
   const [deleteModal, setDeleteModal] = useState({ open: false, course: null });
+  const [studentActionMenu, setStudentActionMenu] = useState(null);
   const [openDropdowns, setOpenDropdowns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [bannerText, setBannerText] = useState('🎉 Sale! Save 20% TODAY on all Courses Use: GADDARIKARBEY 🎁 Ends SOON! Don\'t miss your chance to transform your career!');
@@ -155,16 +156,18 @@ const SuperAdminDashboard = () => {
   const handleAddCourse = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData(e.target);
+      const formData = new FormData();
       
       // Basic validation
-      const title = formData.get('title');
-      const duration = formData.get('duration');
-      const originalPrice = formData.get('originalPrice');
-      const currentPrice = formData.get('currentPrice');
+      const title = courseForm.title;
+      const duration = courseForm.duration;
+      const languages = courseForm.languages;
+      const originalPrice = courseForm.originalPrice;
+      const currentPrice = courseForm.currentPrice;
+      const details = courseForm.details;
       
-      if (!title || !duration || !originalPrice || !currentPrice) {
-        toast.error('❌ Please fill in all required fields (Title, Duration, Original Price, Current Price)');
+      if (!title || !duration || !originalPrice || !currentPrice || !languages || !details) {
+        toast.error('❌ Please fill in all required fields (Title, Duration, Languages, Original Price, Current Price, Details)');
         return;
       }
       
@@ -172,6 +175,16 @@ const SuperAdminDashboard = () => {
         toast.error('❌ Please upload an image or provide an image URL');
         return;
       }
+      
+      // Add form data
+      formData.set('title', title);
+      formData.set('duration', duration);
+      formData.set('languages', languages);
+      formData.set('originalPrice', originalPrice);
+      formData.set('currentPrice', currentPrice);
+      formData.set('discount', courseForm.discount || '');
+      formData.set('details', details);
+      formData.set('teacherName', courseForm.teacherName || '');
       
       // Add technologies to form data
       if (courseForm.technologies && courseForm.technologies.length > 0) {
@@ -203,18 +216,15 @@ const SuperAdminDashboard = () => {
         toast.dismiss(loadingToast);
         
         // Reset form
-        e.target.reset();
         setCourseForm({
+          title: '',
+          duration: '',
+          languages: '',
           originalPrice: '',
           currentPrice: '',
           discount: '',
+          details: '',
           teacherName: '',
-          courseName: '',
-          description: '',
-          duration: '',
-          level: '',
-          category: '',
-          imageUrl: '',
           technologies: [],
           technologiesInput: ''
         });
@@ -276,6 +286,172 @@ const SuperAdminDashboard = () => {
 
   const handleViewDetails = (course) => {
     setViewDetailsModal({ open: true, course: course });
+  };
+
+  // Teacher action functions
+  const handleTeacherStatusToggle = async (teacher) => {
+    try {
+      const newStatus = teacher.status === 'approved' ? 'pending' : 'approved';
+      const loadingToast = toast.loading(`🔄 ${newStatus === 'approved' ? 'Approving' : 'Setting to pending'} teacher...`);
+      
+      const response = await fetch(`/api/teacher/${teacher._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        toast.dismiss(loadingToast);
+        toast.success(`✅ Teacher ${newStatus === 'approved' ? 'approved' : 'set to pending'} successfully!`);
+        
+        // Refresh teachers list
+        const teachersRes = await fetch('/api/admin/profile?teachers=1');
+        const teachersData = await teachersRes.json();
+        if (teachersData.success) {
+          setTeachers(teachersData.teachers);
+        }
+      } else {
+        toast.dismiss(loadingToast);
+        const errorData = await response.json();
+        toast.error(`❌ Error: ${errorData.message || 'Failed to update status'}`);
+      }
+    } catch (error) {
+      console.error('❌ Error updating teacher status:', error);
+      toast.error('❌ Error updating teacher status. Please try again.');
+    }
+  };
+
+  const handleTeacherDisableToggle = async (teacher) => {
+    try {
+      const newDisabledState = !teacher.isDisabled;
+      const loadingToast = toast.loading(`🔄 ${newDisabledState ? 'Disabling' : 'Enabling'} teacher...`);
+      
+      const response = await fetch(`/api/teacher/${teacher._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isDisabled: newDisabledState }),
+      });
+
+      if (response.ok) {
+        toast.dismiss(loadingToast);
+        toast.success(`✅ Teacher ${newDisabledState ? 'disabled' : 'enabled'} successfully!`);
+        
+        // Refresh teachers list
+        const teachersRes = await fetch('/api/admin/profile?teachers=1');
+        const teachersData = await teachersRes.json();
+        if (teachersData.success) {
+          setTeachers(teachersData.teachers);
+        }
+      } else {
+        toast.dismiss(loadingToast);
+        const errorData = await response.json();
+        toast.error(`❌ Error: ${errorData.message || 'Failed to update status'}`);
+      }
+    } catch (error) {
+      console.error('❌ Error updating teacher disable status:', error);
+      toast.error('❌ Error updating teacher status. Please try again.');
+    }
+  };
+
+  const handleTeacherDelete = async (teacher) => {
+    if (window.confirm(`Are you sure you want to delete teacher "${teacher.fullName}"? This action cannot be undone.`)) {
+      try {
+        const loadingToast = toast.loading('🔄 Deleting teacher...');
+        
+        const response = await fetch(`/api/teacher/${teacher._id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          toast.dismiss(loadingToast);
+          toast.success('✅ Teacher deleted successfully!');
+          
+          // Refresh teachers list
+          const teachersRes = await fetch('/api/admin/profile?teachers=1');
+          const teachersData = await teachersRes.json();
+          if (teachersData.success) {
+            setTeachers(teachersData.teachers);
+          }
+        } else {
+          toast.dismiss(loadingToast);
+          const errorData = await response.json();
+          toast.error(`❌ Error: ${errorData.message || 'Failed to delete teacher'}`);
+        }
+      } catch (error) {
+        console.error('❌ Error deleting teacher:', error);
+        toast.error('❌ Error deleting teacher. Please try again.');
+      }
+    }
+  };
+
+  // Student action functions
+  const handleStudentStatusToggle = async (student) => {
+    try {
+      const newStatus = student.status === 'trial' ? 'enrolled' : 'trial';
+      const loadingToast = toast.loading(`🔄 ${newStatus === 'enrolled' ? 'Converting to student' : 'Setting to trial'}...`);
+      
+      const response = await fetch(`/api/student/${student._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        toast.dismiss(loadingToast);
+        toast.success(`✅ Student ${newStatus === 'enrolled' ? 'converted successfully' : 'set to trial'}!`);
+        
+        // Refresh students list
+        const studentsRes = await fetch('/api/admin/profile?students=1');
+        const studentsData = await studentsRes.json();
+        if (studentsData.success) {
+          setStudents(studentsData.students);
+        }
+      } else {
+        toast.dismiss(loadingToast);
+        const errorData = await response.json();
+        toast.error(`❌ Error: ${errorData.message || 'Failed to update status'}`);
+      }
+    } catch (error) {
+      console.error('❌ Error updating student status:', error);
+      toast.error('❌ Error updating student status. Please try again.');
+    }
+  };
+
+  const handleStudentDelete = async (student) => {
+    if (window.confirm(`Are you sure you want to delete student "${student.fullName}"? This action cannot be undone.`)) {
+      try {
+        const loadingToast = toast.loading('🔄 Deleting student...');
+        
+        const response = await fetch(`/api/student/${student._id}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          toast.dismiss(loadingToast);
+          toast.success('✅ Student deleted successfully!');
+          
+          // Refresh students list
+          const studentsRes = await fetch('/api/admin/profile?students=1');
+          const studentsData = await studentsRes.json();
+          if (studentsData.success) {
+            setStudents(studentsData.students);
+          }
+        } else {
+          toast.dismiss(loadingToast);
+          const errorData = await response.json();
+          toast.error(`❌ Error: ${errorData.message || 'Failed to delete student'}`);
+        }
+      } catch (error) {
+        console.error('❌ Error deleting student:', error);
+        toast.error('❌ Error deleting student. Please try again.');
+      }
+    }
   };
 
   const confirmDeleteCourse = async () => {
@@ -365,7 +541,7 @@ const SuperAdminDashboard = () => {
       }
       
       const response = await fetch(`/api/courses?id=${editModal.course._id}`, {
-        method: 'PATCH',
+        method: 'PUT',
         body: formData,
       });
 
@@ -623,6 +799,18 @@ const SuperAdminDashboard = () => {
 
     fetchData();
   }, []);
+
+  // Close student action menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (studentActionMenu && !event.target.closest('.student-action-menu')) {
+        setStudentActionMenu(null);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [studentActionMenu]);
 
   // ... existing code ...
 
@@ -883,6 +1071,7 @@ const SuperAdminDashboard = () => {
                       <span>Class<b>/</b>Course</span>
                       <span>Fee</span>
                       <span>College<b>/</b>School</span>
+                      <span>Actions</span>
                     </div>
                     {students.length === 0 ? (
                       <div style={{ color: '#fff', textAlign: 'center', margin: '2rem 0' }}>No students found.</div>
@@ -955,11 +1144,121 @@ const SuperAdminDashboard = () => {
                               <div className="flight-destination">{student.idCardNumber || '--'}</div>
                               <div className="flight-destination">{student.class || student.course || '--'}</div>
                               <div className="price">{student.phone || '--'}</div>
-                              <div className="flight-destination">{
-                                student.customCollege || student.collegeName
-                                  ? (student.customCollege || student.collegeName)
-                                  : (student.customSchool || student.schoolName || '--')
-                              }</div>
+                                                              <div className="flight-destination" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <span>{
+                                    student.customCollege || student.collegeName
+                                      ? (student.customCollege || student.collegeName)
+                                      : (student.customSchool || student.schoolName || '--')
+                                  }</span>
+                                  {/* 3 Dots Menu Button */}
+                                  <div style={{ position: 'relative' }} className="student-action-menu">
+                                  <button
+                                    title="More Actions"
+                                    style={{
+                                      background: 'none',
+                                      border: 'none',
+                                      cursor: 'pointer',
+                                      padding: '0.5rem',
+                                      borderRadius: '50%',
+                                      color: '#fff',
+                                      fontSize: '1.2rem',
+                                      transition: 'all 0.3s ease'
+                                    }}
+                                    onClick={e => {
+                                      e.stopPropagation();
+                                      setStudentActionMenu(prev => prev === student._id ? null : student._id);
+                                    }}
+                                  >
+                                    ⋮
+                                  </button>
+                                  
+                                  {/* Dropdown Menu */}
+                                  {studentActionMenu === student._id && (
+                                    <div style={{
+                                      position: 'absolute',
+                                      top: '100%',
+                                      right: 0,
+                                      background: 'linear-gradient(145deg, rgba(151, 71, 255, 0.95), rgba(124, 58, 237, 0.95))',
+                                      backdropFilter: 'blur(10px)',
+                                      border: '1px solid rgba(151, 71, 255, 0.3)',
+                                      borderRadius: '12px',
+                                      padding: '0.5rem',
+                                      minWidth: '200px',
+                                      boxShadow: '0 8px 32px rgba(151, 71, 255, 0.3)',
+                                      zIndex: 1000
+                                    }}>
+                                      {/* Current Status Display */}
+                                      <div style={{
+                                        padding: '0.5rem',
+                                        marginBottom: '0.5rem',
+                                        background: 'rgba(255, 255, 255, 0.1)',
+                                        borderRadius: '8px',
+                                        textAlign: 'center',
+                                        border: '1px solid rgba(255, 255, 255, 0.2)'
+                                      }}>
+                                        <div style={{ fontSize: '0.8rem', color: '#ccc', marginBottom: '0.2rem' }}>
+                                          Current Status:
+                                        </div>
+                                        <div style={{
+                                          fontSize: '0.9rem',
+                                          fontWeight: '600',
+                                          color: student.status === 'trial' ? '#f59e0b' : '#22c55e'
+                                        }}>
+                                          {student.status === 'trial' ? '🟡 Trial Student' : '🟢 Enrolled Student'}
+                                        </div>
+                                      </div>
+                                      {/* Trial to Student Button */}
+                                      <button
+                                        title={student.status === 'trial' ? 'Convert to Student' : 'Set to Trial'}
+                                        style={{
+                                          background: student.status === 'trial' ? '#22c55e' : '#f59e0b',
+                                          color: 'white',
+                                          border: 'none',
+                                          padding: '0.5rem 1rem',
+                                          borderRadius: '8px',
+                                          cursor: 'pointer',
+                                          fontSize: '0.8rem',
+                                          fontWeight: '600',
+                                          width: '100%',
+                                          marginBottom: '0.5rem',
+                                          transition: 'all 0.3s ease'
+                                        }}
+                                        onClick={e => {
+                                          e.stopPropagation();
+                                          handleStudentStatusToggle(student);
+                                          setStudentActionMenu(null);
+                                        }}
+                                      >
+                                        {student.status === 'trial' ? 'Convert to Student' : 'Set to Trial'}
+                                      </button>
+                                      
+                                      {/* Delete Button */}
+                                      <button
+                                        title="Delete Student"
+                                        style={{
+                                          background: '#dc2626',
+                                          color: 'white',
+                                          border: 'none',
+                                          padding: '0.5rem 1rem',
+                                          borderRadius: '8px',
+                                          cursor: 'pointer',
+                                          fontSize: '0.8rem',
+                                          fontWeight: '600',
+                                          width: '100%',
+                                          transition: 'all 0.3s ease'
+                                        }}
+                                        onClick={e => {
+                                          e.stopPropagation();
+                                          handleStudentDelete(student);
+                                          setStudentActionMenu(null);
+                                        }}
+                                      >
+                                        Delete Student
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           );
                         })}
@@ -1049,6 +1348,7 @@ const SuperAdminDashboard = () => {
                       <span>Mobile</span>
                       <span>Subjects</span>
                       <span>Status</span>
+                      <span>Actions</span>
                     </div>
                     {teachers.length === 0 ? (
                       <div style={{ color: '#fff', textAlign: 'center', margin: '2rem 0' }}>No teachers found.</div>
@@ -1107,7 +1407,82 @@ const SuperAdminDashboard = () => {
                               )}
                             </div>
                             <div className="flight-destination">{teacher.subject ? (teacher.subject.length > 20 ? teacher.subject.slice(0, 20) + '...' : teacher.subject) : '--'}</div>
-                            <div className="flight-destination">{teacher.status || '--'}</div>
+                            <div className="flight-destination">
+                              <span style={{ 
+                                color: teacher.status === 'approved' ? '#22c55e' : '#f59e0b',
+                                fontWeight: '600',
+                                fontSize: '0.9rem'
+                              }}>
+                                {teacher.status || 'pending'}
+                              </span>
+                            </div>
+                            <div className="flight-destination" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                              {/* Status Toggle Button */}
+                              <button
+                                title={teacher.status === 'approved' ? 'Set to Pending' : 'Approve Teacher'}
+                                style={{
+                                  background: teacher.status === 'approved' ? '#f59e0b' : '#22c55e',
+                                  color: 'white',
+                                  border: 'none',
+                                  padding: '0.4rem 0.8rem',
+                                  borderRadius: '6px',
+                                  cursor: 'pointer',
+                                  fontSize: '0.8rem',
+                                  fontWeight: '600',
+                                  transition: 'all 0.3s ease'
+                                }}
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  handleTeacherStatusToggle(teacher);
+                                }}
+                              >
+                                {teacher.status === 'approved' ? 'Pending' : 'Approve'}
+                              </button>
+                              
+                              {/* Disable/Enable Button */}
+                              <button
+                                title={teacher.isDisabled ? 'Enable Teacher' : 'Disable Teacher'}
+                                style={{
+                                  background: teacher.isDisabled ? '#22c55e' : '#ef4444',
+                                  color: 'white',
+                                  border: 'none',
+                                  padding: '0.4rem 0.8rem',
+                                  borderRadius: '6px',
+                                  cursor: 'pointer',
+                                  fontSize: '0.8rem',
+                                  fontWeight: '600',
+                                  transition: 'all 0.3s ease'
+                                }}
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  handleTeacherDisableToggle(teacher);
+                                }}
+                              >
+                                {teacher.isDisabled ? 'Enable' : 'Disable'}
+                              </button>
+                              
+                              {/* Delete Button */}
+                              <button
+                                title="Delete Teacher"
+                                style={{
+                                  background: '#dc2626',
+                                  color: 'white',
+                                  border: 'none',
+                                  padding: '0.4rem 0.8rem',
+                                  borderRadius: '6px',
+                                  cursor: 'pointer',
+                                  fontSize: '0.8rem',
+                                  fontWeight: '600',
+                                  transition: 'all 0.3s ease'
+                                }}
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  handleTeacherDelete(teacher);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </div>
                           </div>
                         ))}
                         {/* Pagination Controls for Teachers */}
@@ -1421,15 +1796,39 @@ const SuperAdminDashboard = () => {
             <form className="add-course-form" onSubmit={handleAddCourse}>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ color: '#fff', fontWeight: 500, marginRight: 8 }}>Course Title:</label>
-                <input type="text" name="title" className="input-field" placeholder="Enter course title" required />
+                <input 
+                  type="text" 
+                  name="title" 
+                  className="input-field" 
+                  placeholder="Enter course title" 
+                  value={courseForm.title || ''}
+                  onChange={e => setCourseForm(prev => ({ ...prev, title: e.target.value }))}
+                  required 
+                />
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ color: '#fff', fontWeight: 500, marginRight: 8 }}>Duration:</label>
-                <input type="text" name="duration" className="input-field" placeholder="e.g. 6 MONTHS" required />
+                <input 
+                  type="text" 
+                  name="duration" 
+                  className="input-field" 
+                  placeholder="e.g. 6 MONTHS" 
+                  value={courseForm.duration || ''}
+                  onChange={e => setCourseForm(prev => ({ ...prev, duration: e.target.value }))}
+                  required 
+                />
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ color: '#fff', fontWeight: 500, marginRight: 8 }}>Languages:</label>
-                <input type="text" name="languages" className="input-field" placeholder="e.g. Hindi, English" required />
+                <input 
+                  type="text" 
+                  name="languages" 
+                  className="input-field" 
+                  placeholder="e.g. Hindi, English" 
+                  value={courseForm.languages || ''}
+                  onChange={e => setCourseForm(prev => ({ ...prev, languages: e.target.value }))}
+                  required 
+                />
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ color: '#fff', fontWeight: 500, marginRight: 8 }}>Original Price:</label>
@@ -1490,7 +1889,14 @@ const SuperAdminDashboard = () => {
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ color: '#fff', fontWeight: 500, marginRight: 8 }}>Details:</label>
-                <textarea name="details" className="input-field" placeholder="Course details, comma separated" required></textarea>
+                <textarea 
+                  name="details" 
+                  className="input-field" 
+                  placeholder="Course details, comma separated" 
+                  value={courseForm.details || ''}
+                  onChange={e => setCourseForm(prev => ({ ...prev, details: e.target.value }))}
+                  required
+                ></textarea>
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ color: '#fff', fontWeight: 500, marginRight: 8 }}>Course Image (Upload):</label>

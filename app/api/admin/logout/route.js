@@ -1,29 +1,30 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(request) {
+export async function POST() {
   try {
-    // Create response with success message
+    console.log('🚪 Admin Logout API called');
+    
     const response = NextResponse.json({
       success: true,
       message: 'Logged out successfully'
     });
-
-    // Clear the admin session cookie by setting it to expire in the past
-    response.cookies.set('adminToken', '', {
+    
+    // Clear admin cookie
+    response.cookies.set('admin_auth', '', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      expires: new Date(0), // This makes the cookie expire immediately
-      path: '/'
+      sameSite: 'lax',
+      expires: new Date(0),
+      path: '/',
     });
-
+    
+    console.log('✅ Admin logged out successfully');
     return response;
-
+    
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error('❌ Admin Logout API error:', error);
     return NextResponse.json({
       success: false,
-      message: 'Logout failed'
+      message: 'Internal server error'
     }, { status: 500 });
   }
 } 

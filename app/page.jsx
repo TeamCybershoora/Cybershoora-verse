@@ -826,7 +826,7 @@ export default function HomePage() {
             </h1>
           </div>
                     <div className="companies-logos-wrapper" ref={companiesSliderRef}>
-            {(homepageData?.companies || []).length === 0 ? (
+            {(homepageData?.companies || []).filter(logo => logo.src && logo.src.includes('cloudinary.com')).length === 0 ? (
               <div style={{ 
                 textAlign: 'center', 
                 color: '#666', 
@@ -844,34 +844,36 @@ export default function HomePage() {
               </div>
             ) : isMobile ? (
               <div className="companies-logos-row">
-                {/* Duplicate logos for infinite scroll effect */}
-                {[...(homepageData?.companies || []), ...(homepageData?.companies || []), ...(homepageData?.companies || []), ...(homepageData?.companies || [])].map((logo, idx) => (
-                  <img key={idx} src={logo.src} alt={logo.alt} title={logo.title || logo.alt} className="company-logo" />
-                ))}
+                {/* Duplicate logos for infinite scroll effect - only valid Cloudinary URLs */}
+                {[...(homepageData?.companies || []), ...(homepageData?.companies || []), ...(homepageData?.companies || []), ...(homepageData?.companies || [])]
+                  .filter(logo => logo.src && logo.src.includes('cloudinary.com'))
+                  .map((logo, idx) => (
+                    <img key={idx} src={logo.src} alt={logo.alt} title={logo.title || logo.alt} className="company-logo" />
+                  ))}
               </div>
             ) : (
               <>
                 {/* First row - 3 logos */}
                 <div className="companies-logos-row row-1">
-                  {(homepageData?.companies || []).slice(0, 3).map((logo, idx) => (
+                  {(homepageData?.companies || []).filter(logo => logo.src && logo.src.includes('cloudinary.com')).slice(0, 3).map((logo, idx) => (
                     <img key={idx} src={logo.src} alt={logo.alt} title={logo.title || logo.alt} className="company-logo" />
                   ))}
                 </div>
                 {/* Second row - 4 logos */}
                 <div className="companies-logos-row row-2">
-                  {(homepageData?.companies || []).slice(3, 7).map((logo, idx) => (
+                  {(homepageData?.companies || []).filter(logo => logo.src && logo.src.includes('cloudinary.com')).slice(3, 7).map((logo, idx) => (
                     <img key={idx + 3} src={logo.src} alt={logo.alt} title={logo.title || logo.alt} className="company-logo" />
                   ))}
                 </div>
                 {/* Third row - 4 logos */}
                 <div className="companies-logos-row row-3">
-                  {(homepageData?.companies || []).slice(7, 11).map((logo, idx) => (
+                  {(homepageData?.companies || []).filter(logo => logo.src && logo.src.includes('cloudinary.com')).slice(7, 11).map((logo, idx) => (
                     <img key={idx + 7} src={logo.src} alt={logo.alt} title={logo.title || logo.alt} className="company-logo" />
                   ))}
                 </div>
                 {/* Fourth row - 4 logos */}
                 <div className="companies-logos-row row-4">
-                  {(homepageData?.companies || []).slice(11, 15).map((logo, idx) => (
+                  {(homepageData?.companies || []).filter(logo => logo.src && logo.src.includes('cloudinary.com')).slice(11, 15).map((logo, idx) => (
                     <img key={idx + 11} src={logo.src} alt={logo.alt} title={logo.title || logo.alt} className="company-logo" />
                   ))}
                 </div>

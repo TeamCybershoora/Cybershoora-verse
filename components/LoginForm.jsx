@@ -66,15 +66,24 @@ export default function LoginForm({ initialRole = 'student' }) {
     }
     setIsSubmitting(true);
     setError("");
+    
+    const loginData = { ...form, userType: role };
+    console.log('🔐 Sending login data:', loginData);
+    console.log('🔐 Form data:', form);
+    console.log('🔐 Role:', role);
+    
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, userType: role }),
+        body: JSON.stringify(loginData),
       });
+      console.log('📡 Response status:', res.status);
       const data = await res.json();
+      console.log('📡 Response data:', data);
+      
       if (data.success) {
-        setUserId(data.studentId || data.teacherId);
+        setUserId(data.userId || data.studentId || data.teacherId);
         setStep(2); // Show OTP input
         toast.success("OTP sent to your email");
       } else {
@@ -82,6 +91,7 @@ export default function LoginForm({ initialRole = 'student' }) {
         toast.error(data.message || "Login failed");
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError("Network error");
       toast.error("Network error");
     } finally {
@@ -100,7 +110,7 @@ export default function LoginForm({ initialRole = 'student' }) {
         headers: { "Content-Type": "application/json" },
         credentials: "include", // Ensure cookies are accepted
         body: JSON.stringify({
-          [role === 'student' ? 'studentId' : 'teacherId']: userId,
+          userId: userId,
           otp,
           userType: role,
           deviceName,
@@ -142,13 +152,14 @@ export default function LoginForm({ initialRole = 'student' }) {
       const data = await res.json();
       if (data.success) {
         toast.success("OTP resent to your email");
-        setUserId(data.studentId || data.teacherId);
+        setUserId(data.userId || data.studentId || data.teacherId);
         setResendCooldown(30); // 30 seconds cooldown
       } else {
         setError(data.message || "Failed to resend OTP");
         toast.error(data.message || "Failed to resend OTP");
       }
     } catch (err) {
+      console.error('Resend OTP error:', err);
       setError("Network error");
       toast.error("Network error");
     } finally {
