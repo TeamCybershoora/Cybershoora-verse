@@ -5,9 +5,11 @@ console.log('🚀 Starting optimized build...');
 // Set environment variables for build optimization
 const buildEnv = {
   ...process.env,
-  NODE_OPTIONS: '--max-old-space-size=3072',
+  NODE_OPTIONS: '--max-old-space-size=4096 --gc-interval=100',
   NEXT_TELEMETRY_DISABLED: '1',
-  NEXT_STATIC_BUILD_CONCURRENCY: '1',
+  NEXT_OPTIMIZE_FONTS: 'false',
+  NEXT_OPTIMIZE_IMAGES: 'false',
+  NEXT_OPTIMIZE_CSS: 'false',
   RENDER_CACHE_DIR: '/opt/render/.cache',
   NEXT_CACHE_DIR: '/opt/render/.cache/next',
 };
@@ -19,12 +21,16 @@ try {
   // Create cache directories
   execSync('mkdir -p /opt/render/.cache/next', { stdio: 'inherit' });
   
-  console.log('📦 Building Next.js application...');
+  console.log('📦 Building Next.js application with optimizations...');
+  
+  // Run garbage collection before build
+  global.gc && global.gc();
   
   // Run the build with optimized settings
   execSync('next build', { 
     stdio: 'inherit',
-    env: buildEnv
+    env: buildEnv,
+    maxBuffer: 1024 * 1024 * 100 // 100MB buffer
   });
   
   console.log('✅ Build completed successfully!');

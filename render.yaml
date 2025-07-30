@@ -3,17 +3,21 @@ services:
     name: shoora-verse
     env: node
     plan: starter
-    buildCommand: npm install && npm run build
+    buildCommand: NODE_ENV=production npm install --production=false && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: NODE_OPTIONS
-        value: --max-old-space-size=3072
+        value: --max-old-space-size=4096 --gc-interval=100
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
-      - key: NEXT_STATIC_BUILD_CONCURRENCY
-        value: "1"
+      - key: NEXT_OPTIMIZE_FONTS
+        value: "false"
+      - key: NEXT_OPTIMIZE_IMAGES
+        value: "false"
+      - key: NEXT_OPTIMIZE_CSS
+        value: "false"
       - key: RENDER_CACHE_DIR
         value: /opt/render/.cache
       - key: NEXT_CACHE_DIR
@@ -21,6 +25,6 @@ services:
     disk:
       name: cache
       mountPath: /opt/render/.cache
-      sizeGB: 2
+      sizeGB: 3
     healthCheckPath: /
     autoDeploy: true 

@@ -4,30 +4,81 @@ import TerserPlugin from 'terser-webpack-plugin';
 const nextConfig = {
   images: {
     domains: ['ik.imagekit.io'],
+    minimumCacheTTL: 60,
+    disableStaticImages: true,
   },
-  // Force server-side rendering for all pages
+  // Optimize for production
   output: 'standalone',
-  // Disable static optimization completely
+  productionBrowserSourceMaps: false,
+  optimizeFonts: false,
+  compress: true,
+  poweredByHeader: false,
+  generateEtags: false,
+  keepAlive: false,
+  // Minimal experimental features
   experimental: {
-    serverActions: {
-      bodySizeLimit: '1mb',
-    },
-    workerThreads: false,
-    cpus: 1,
-    optimizePackageImports: ['react-icons', 'lucide-react'],
+    serverActions: false,
+    optimizePackageImports: ['react-icons'],
+    optimizeCss: true,
+    legacyBrowsers: false,
   },
-  // Increase static generation timeout
-  staticPageGenerationTimeout: 120,
-  // Enable server-side rendering
-  compiler: {
-    removeConsole: true,
-  },
-  // Disable type checking and linting during build
+  // Disable all development features
+  reactStrictMode: false,
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  webpack: (config, { dev, isServer }) => {
+    // Production optimizations only
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        minimize: true,
+        minimizer: [
+          new TerserPlugin({
+            terserOptions: {
+              parse: {
+                ecma: 8,
+              },
+              compress: {
+                ecma: 5,
+                warnings: false,
+                comparisons: false,
+                inline: 2,
+                drop_console: true,
+              },
+              mangle: {
+                safari10: true,
+              },
+              output: {
+                ecma: 5,
+                comments: false,
+                ascii_only: true,
+              },
+            },
+          }),
+        ],
+        splitChunks: {
+          cacheGroups: {
+            default: false,
+            vendors: false,
+          },
+        },
+      };
+    }
+
+    // Reduce bundle size
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'react': 'preact/compat',
+        'react-dom': 'preact/compat',
+      };
+    }
+
+    return config;
   },
   webpack: (config, { isServer, dev }) => {
     if (isServer) {
