@@ -51,7 +51,7 @@ const MLoader = ({ onComplete }) => {
         .loader {
           width: fit-content;
           font-size: 20vw;
-          font-family: 'BeniBold', system-ui, sans-serif;
+          font-family: 'Beni', system-ui, sans-serif;
           font-weight: bold;
           text-transform: uppercase;
           color: #0000;

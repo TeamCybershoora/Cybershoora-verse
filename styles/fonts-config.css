@@ -1,0 +1,180 @@
+/* Font Configuration - Consolidated font loading */
+
+/* Ensure proper font loading and display */
+@font-face {
+  font-family: 'Beni';
+  src: url('/fonts/BeniBlack.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Beni';
+  src: url('/fonts/BeniBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Beni';
+  src: url('/fonts/BeniRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Beni';
+  src: url('/fonts/BeniLight.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* External fonts from ImageKit - Juan/Juana family */
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-medium_WrymeW95W.ttf?updatedAt=1713302126248") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-extralight__KHggd4aZ.ttf?updatedAt=1713302127923") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-bold_kpaGmQ4v_v.ttf?updatedAt=1713302125581") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-black_qsRZ2yEB9.ttf?updatedAt=1713302122342") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Juan";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/Fontspring-DEMO-juana-black,Fontspring-DEMO-juana-blackit,Fontspring-DEMO-juana-bold/Fontspring-DEMO-juana-regular_mHnKLu9dd0.ttf?updatedAt=1713302122279") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* NeueMachina fonts */
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Regular_DQCmjH1st.ttf?updatedAt=1713347905052") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Bold_WaMOsLX9Z9.ttf?updatedAt=1713347904936") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NeueMachina";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/neueMachina/NeueMachina-Medium_d0jNuroW9.ttf?updatedAt=1713347904973") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Gilroy fonts */
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/SiteStaticFiles/Gilroy-Extrabold_YC6oQDa3Ix.ttf?updatedAt=1697720439904");
+  font-family: "Gilroy";
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/SiteStaticFiles/Gilroy-Bold_JK4cTGJOE.ttf?updatedAt=1697720175118");
+  font-family: "Gilroy";
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/SiteStaticFiles/Gilroy-Medium_eHDK2RllDd.ttf?updatedAt=1697720216741");
+  font-family: "Gilroy";
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Helvetica fonts */
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-Regular_5Mzhp8KlA8_CAVTbnsPOM.woff2?updatedAt=1714048137030");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("https://ik.imagekit.io/sheryians/Fonts/helvetica/HelveticaNowDisplay-Bold_VMHV5twUMR_2SBNfxj1ry.woff2?updatedAt=1714048134442");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Source Code Pro */
+@font-face {
+  src: url("https://ik.imagekit.io/sheryians/Fonts/SourceCodePro-VariableFont_wght_6jNfJu5_qA.ttf?updatedAt=1731422147701");
+  font-family: "SourceCodePro";
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Font fallbacks and optimization */
+* {
+  font-family: "Helvetica", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Specific font classes for easy usage */
+.font-beni {
+  font-family: 'Beni', sans-serif;
+}
+
+.font-juan {
+  font-family: 'Juan', sans-serif;
+}
+
+.font-neue-machina {
+  font-family: 'NeueMachina', sans-serif;
+}
+
+.font-gilroy {
+  font-family: 'Gilroy', sans-serif;
+}
+
+.font-helvetica {
+  font-family: 'Helvetica', sans-serif;
+}
+
+.font-source-code {
+  font-family: 'SourceCodePro', monospace;
+} 

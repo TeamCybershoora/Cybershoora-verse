@@ -6,6 +6,7 @@ import '@/styles/index.scss';
 import '@/styles/common.css';
 import '@/styles/common.scss';
 import '@/styles/courses.css';
+import '@/styles/fonts.css';
 import gsap from 'gsap';
 
 

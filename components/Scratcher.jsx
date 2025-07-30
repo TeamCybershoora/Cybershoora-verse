@@ -94,7 +94,7 @@ export default function Scratcher() {
           justify-content: flex-start;
         }
         .hero-heading {
-          font-family: 'BeniBold', 'NeueMachina', 'Inter', Arial, sans-serif;
+          font-family: 'Beni', 'NeueMachina', 'Inter', Arial, sans-serif;
           font-weight: 900;
           color: #fff;
           text-align: left;
