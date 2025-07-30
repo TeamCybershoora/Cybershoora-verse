@@ -125,6 +125,14 @@ const nextConfig = {
       });
     }
     
+    // Handle face-api.js in client builds too - make it optional
+    if (!isServer) {
+      config.module.rules.push({
+        test: /node_modules\/face-api\.js/,
+        use: 'null-loader'
+      });
+    }
+    
     return config;
   },
   // Add Vercel-specific optimizations

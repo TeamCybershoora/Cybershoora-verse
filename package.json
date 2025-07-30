@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "SKIP_STATIC_GENERATION=true NODE_OPTIONS='--max-old-space-size=8192' next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
