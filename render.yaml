@@ -9,6 +9,10 @@ services:
       - key: NODE_ENV
         value: production
       - key: NODE_OPTIONS
-        value: --max-old-space-size=2048
+        value: --max-old-space-size=1024
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      - key: SKIP_STATIC_GENERATION
+        value: "true"
     healthCheckPath: /
     autoDeploy: true 

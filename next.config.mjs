@@ -5,13 +5,23 @@ const nextConfig = {
   images: {
     domains: ['ik.imagekit.io'],
   },
+  // Disable static generation to reduce memory usage
+  output: 'standalone',
+  trailingSlash: false,
+  compress: true,
+  reactStrictMode: false,
+  // Disable static optimization for all pages
   experimental: {
     serverActions: {
-      bodySizeLimit: '1mb', // Reduced to minimum
+      bodySizeLimit: '1mb',
     },
     workerThreads: false,
     cpus: 1,
     optimizePackageImports: ['react-icons', 'lucide-react'],
+    // Disable static generation
+    staticGenerationAsyncStorage: false,
+    // Reduce memory usage
+    memoryBasedWorkers: false,
   },
   // Disable ESLint during build to avoid TypeScript parser issues
   eslint: {
@@ -136,17 +146,11 @@ const nextConfig = {
     return config;
   },
   // Add Vercel-specific optimizations
-  output: 'standalone',
   poweredByHeader: false,
   // Reduce memory usage during build
   generateBuildId: async () => {
     return 'build-' + Date.now();
   },
-  // Disable static optimization for heavy pages
-  trailingSlash: false,
-  compress: true,
-  // Reduce memory usage
-  reactStrictMode: false,
 };
 
 export default nextConfig;
