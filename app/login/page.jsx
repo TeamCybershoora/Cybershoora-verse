@@ -7,15 +7,15 @@ export default function LoginPage() {
   const [userType, setUserType] = useState('student');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+    <div className="flex justify-center items-center p-4 min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="w-full max-w-md">
         {/* User Type Selector */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+        <div className="p-6 mb-6 bg-white rounded-lg shadow-lg">
+          <h2 className="mb-6 text-2xl font-bold text-center text-gray-800">
             Welcome to Shoora Tech
           </h2>
           
-          <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
+          <div className="flex p-1 mb-6 bg-gray-100 rounded-lg">
             <button
               onClick={() => setUserType('student')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
@@ -38,8 +38,8 @@ export default function LoginPage() {
             </button>
           </div>
           
-          <div className="text-center mb-4">
-            <p className="text-gray-600 text-sm">
+          <div className="mb-4 text-center">
+            <p className="text-sm text-gray-600">
               {userType === 'student' 
                 ? 'Login to access your student dashboard'
                 : 'Login to access your teacher dashboard'
@@ -52,16 +52,16 @@ export default function LoginPage() {
         <LoginForm initialRole={userType} />
         
         {/* Footer Links */}
-        <div className="text-center mt-6 space-y-2">
+        <div className="mt-6 space-y-2 text-center">
           <a 
             href="/register" 
-            className="text-blue-600 hover:text-blue-800 text-sm block"
+            className="block text-sm text-blue-600 hover:text-blue-800"
           >
             Don't have an account? Register here
           </a>
           <a 
             href="/forgot-password" 
-            className="text-gray-600 hover:text-gray-800 text-sm block"
+            className="block text-sm text-gray-600 hover:text-gray-800"
           >
             Forgot your password?
           </a>

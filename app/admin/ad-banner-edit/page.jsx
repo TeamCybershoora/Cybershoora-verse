@@ -98,40 +98,7 @@ export default function AdBannerEditPage() {
                   animation: `scrollText ${bannerConfig.scrollSpeed}s linear infinite`,
                   minWidth: 'fit-content'
                 }}>
-                  <span style={{
-                    fontSize: '1.4rem',
-                    display: 'inline-block',
-                    paddingRight: '10px',
-                    color: bannerConfig.textColor,
-                    fontWeight: '400'
-                  }}>
-                    {bannerConfig.text}
-                  </span>
-                  <span style={{
-                    fontSize: '1.4rem',
-                    display: 'inline-block',
-                    paddingRight: '10px',
-                    color: bannerConfig.textColor,
-                    fontWeight: '400'
-                  }}>
-                    {bannerConfig.text}
-                  </span>
-                  <span style={{
-                    fontSize: '1.4rem',
-                    display: 'inline-block',
-                    paddingRight: '10px',
-                    color: bannerConfig.textColor,
-                    fontWeight: '400'
-                  }}>
-                    {bannerConfig.text}
-                  </span>
-                  <span style={{
-                    fontSize: '1.4rem',
-                    display: 'inline-block',
-                    paddingRight: '10px',
-                    color: bannerConfig.textColor,
-                    fontWeight: '400'
-                  }}>
+                  <span style={{ color: bannerConfig.textColor }}>
                     {bannerConfig.text}
                   </span>
                 </div>
@@ -139,446 +106,243 @@ export default function AdBannerEditPage() {
             </div>
           )}
 
-          {/* Main Content */}
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+              Advertisement Banner Editor
+            </h1>
+            <p style={{ fontSize: '1.1rem', opacity: 0.8 }}>
+              Customize your advertisement banner settings
+            </p>
+          </div>
+
+          {/* Banner Configuration Form */}
           <div style={{
-            maxWidth: '1200px',
-            margin: '0 auto',
-            paddingTop: previewBanner ? '60px' : '0'
+            background: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '20px',
+            padding: '2rem',
+            marginBottom: '2rem'
           }}>
-            {/* Header */}
-            <div style={{
-              textAlign: 'center',
-              marginBottom: '3rem'
-            }}>
-              <h1 style={{
-                fontSize: '2.5rem',
-                fontWeight: '700',
-                margin: '0 0 1rem 0',
-                background: 'linear-gradient(135deg, #9747ff, #7c3aed)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                Advertisement Banner Editor
-              </h1>
-              <p style={{
-                fontSize: '1.1rem',
-                color: '#ccc',
-                margin: 0
-              }}>
-                Customize your advertisement banner text, colors, and animation
-              </p>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Banner Settings</h2>
+            
+            {/* Banner Text */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                Banner Text:
+              </label>
+              <textarea
+                value={bannerConfig.text}
+                onChange={(e) => setBannerConfig({...bannerConfig, text: e.target.value})}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#fff',
+                  fontSize: '1rem',
+                  minHeight: '80px',
+                  resize: 'vertical'
+                }}
+                placeholder="Enter your banner text here..."
+              />
             </div>
 
-            {/* Editor Grid */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '2rem',
-              marginBottom: '2rem'
-            }}>
-              {/* Left Column - Text Settings */}
-              <div style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                padding: '2rem',
-                borderRadius: '20px',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(10px)'
-              }}>
-                <h3 style={{
-                  color: '#9747ff',
-                  fontSize: '1.5rem',
-                  fontWeight: '600',
-                  margin: '0 0 1.5rem 0'
-                }}>
-                  Banner Text & Content
-                </h3>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{
-                    display: 'block',
-                    color: '#ccc',
-                    fontWeight: '500',
-                    marginBottom: '0.5rem',
-                    fontSize: '1rem'
-                  }}>
-                    Advertisement Text
-                  </label>
-                  <textarea
-                    value={bannerConfig.text}
-                    onChange={(e) => setBannerConfig(prev => ({ ...prev, text: e.target.value }))}
-                    style={{
-                      width: '100%',
-                      minHeight: '120px',
-                      padding: '1rem',
-                      borderRadius: '10px',
-                      border: '1.5px solid #9747ff',
-                      fontSize: '16px',
-                      background: '#181828',
-                      color: '#fff',
-                      resize: 'vertical',
-                      fontFamily: 'inherit'
-                    }}
-                    placeholder="Enter your advertisement text here..."
-                  />
-                </div>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{
-                    display: 'block',
-                    color: '#ccc',
-                    fontWeight: '500',
-                    marginBottom: '0.5rem',
-                    fontSize: '1rem'
-                  }}>
-                    Font Size (px)
-                  </label>
-                  <input
-                    type="number"
-                    value={bannerConfig.fontSize}
-                    onChange={(e) => setBannerConfig(prev => ({ ...prev, fontSize: e.target.value }))}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      borderRadius: '10px',
-                      border: '1.5px solid #9747ff',
-                      fontSize: '16px',
-                      background: '#181828',
-                      color: '#fff'
-                    }}
-                    min="12"
-                    max="32"
-                  />
-                </div>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{
-                    display: 'block',
-                    color: '#ccc',
-                    fontWeight: '500',
-                    marginBottom: '0.5rem',
-                    fontSize: '1rem'
-                  }}>
-                    Font Weight
-                  </label>
-                  <select
-                    value={bannerConfig.fontWeight}
-                    onChange={(e) => setBannerConfig(prev => ({ ...prev, fontWeight: e.target.value }))}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      borderRadius: '10px',
-                      border: '1.5px solid #9747ff',
-                      fontSize: '16px',
-                      background: '#181828',
-                      color: '#fff'
-                    }}
-                  >
-                    <option value="normal">Normal</option>
-                    <option value="bold">Bold</option>
-                    <option value="600">Semi Bold</option>
-                    <option value="700">Bold</option>
-                    <option value="800">Extra Bold</option>
-                  </select>
-                </div>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{
-                    display: 'block',
-                    color: '#ccc',
-                    fontWeight: '500',
-                    marginBottom: '0.5rem',
-                    fontSize: '1rem'
-                  }}>
-                    Scroll Speed (seconds)
-                  </label>
-                  <input
-                    type="number"
-                    value={bannerConfig.scrollSpeed}
-                    onChange={(e) => setBannerConfig(prev => ({ ...prev, scrollSpeed: e.target.value }))}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      borderRadius: '10px',
-                      border: '1.5px solid #9747ff',
-                      fontSize: '16px',
-                      background: '#181828',
-                      color: '#fff'
-                    }}
-                    min="5"
-                    max="60"
-                  />
-                </div>
-              </div>
-
-              {/* Right Column - Color Settings */}
-              <div style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                padding: '2rem',
-                borderRadius: '20px',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(10px)'
-              }}>
-                <h3 style={{
-                  color: '#9747ff',
-                  fontSize: '1.5rem',
-                  fontWeight: '600',
-                  margin: '0 0 1.5rem 0'
-                }}>
-                  Colors & Styling
-                </h3>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{
-                    display: 'block',
-                    color: '#ccc',
-                    fontWeight: '500',
-                    marginBottom: '0.5rem',
-                    fontSize: '1rem'
-                  }}>
-                    Background Color
-                  </label>
-                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-                    <input
-                      type="color"
-                      value="#ea5c03"
-                      onChange={(e) => {
-                        const color1 = e.target.value;
-                        const color2 = bannerConfig.backgroundColor.includes('rgb(255, 225, 0)') ? 'rgb(255, 225, 0)' : '#ffe100';
-                        setBannerConfig(prev => ({
-                          ...prev,
-                          backgroundColor: `linear-gradient(90deg, ${color1}, ${color2})`
-                        }));
-                      }}
-                      style={{
-                        width: '60px',
-                        height: '50px',
-                        border: 'none',
-                        borderRadius: '10px',
-                        cursor: 'pointer'
-                      }}
-                    />
-                    <input
-                      type="color"
-                      value="#ffe100"
-                      onChange={(e) => {
-                        const color2 = e.target.value;
-                        const color1 = bannerConfig.backgroundColor.includes('rgb(234, 92, 3)') ? 'rgb(234, 92, 3)' : '#ea5c03';
-                        setBannerConfig(prev => ({
-                          ...prev,
-                          backgroundColor: `linear-gradient(90deg, ${color1}, ${color2})`
-                        }));
-                      }}
-                      style={{
-                        width: '60px',
-                        height: '50px',
-                        border: 'none',
-                        borderRadius: '10px',
-                        cursor: 'pointer'
-                      }}
-                    />
-                  </div>
-                  <div style={{
-                    padding: '1rem',
-                    borderRadius: '10px',
-                    background: bannerConfig.backgroundColor,
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    textAlign: 'center',
-                    color: '#000',
-                    fontWeight: 'bold'
-                  }}>
-                    Preview Background
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{
-                    display: 'block',
-                    color: '#ccc',
-                    fontWeight: '500',
-                    marginBottom: '0.5rem',
-                    fontSize: '1rem'
-                  }}>
-                    Text Color
-                  </label>
-                  <input
-                    type="color"
-                    value={bannerConfig.textColor}
-                    onChange={(e) => setBannerConfig(prev => ({ ...prev, textColor: e.target.value }))}
-                    style={{
-                      width: '100%',
-                      height: '50px',
-                      border: 'none',
-                      borderRadius: '10px',
-                      cursor: 'pointer'
-                    }}
-                  />
-                </div>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    color: '#ccc',
-                    fontWeight: '500',
-                    fontSize: '1rem',
-                    cursor: 'pointer'
-                  }}>
-                    <input
-                      type="checkbox"
-                      checked={bannerConfig.isActive}
-                      onChange={(e) => setBannerConfig(prev => ({ ...prev, isActive: e.target.checked }))}
-                      style={{
-                        marginRight: '0.5rem',
-                        transform: 'scale(1.2)'
-                      }}
-                    />
-                    Banner Active
-                  </label>
-                </div>
-
-                <div style={{
-                  padding: '1rem',
+            {/* Background Color */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                Background Color:
+              </label>
+              <input
+                type="text"
+                value={bannerConfig.backgroundColor}
+                onChange={(e) => setBannerConfig({...bannerConfig, backgroundColor: e.target.value})}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
                   borderRadius: '10px',
-                  background: bannerConfig.backgroundColor,
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  textAlign: 'center',
-                  color: bannerConfig.textColor,
-                  fontWeight: bannerConfig.fontWeight,
-                  fontSize: `${bannerConfig.fontSize}px`
-                }}>
-                  Text Preview: {bannerConfig.text.substring(0, 50)}...
-                </div>
-              </div>
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#fff',
+                  fontSize: '1rem'
+                }}
+                placeholder="e.g., linear-gradient(90deg, #ff6b6b, #4ecdc4)"
+              />
             </div>
 
-            {/* Action Buttons */}
-            <div style={{
-              display: 'flex',
-              gap: '1rem',
-              justifyContent: 'center',
-              flexWrap: 'wrap'
-            }}>
-              <button
-                onClick={handlePreview}
+            {/* Text Color */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                Text Color:
+              </label>
+              <input
+                type="color"
+                value={bannerConfig.textColor}
+                onChange={(e) => setBannerConfig({...bannerConfig, textColor: e.target.value})}
                 style={{
-                  background: previewBanner ? '#ef4444' : '#22c55e',
-                  color: '#fff',
+                  width: '60px',
+                  height: '40px',
                   border: 'none',
-                  borderRadius: '10px',
-                  padding: '1rem 2rem',
-                  fontSize: '1.1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
+                  borderRadius: '8px',
+                  cursor: 'pointer'
                 }}
-              >
-                {previewBanner ? 'Hide Preview' : 'Show Preview'}
-              </button>
-
-              <button
-                onClick={handleSave}
-                style={{
-                  background: 'linear-gradient(135deg, #9747ff, #7c3aed)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '10px',
-                  padding: '1rem 2rem',
-                  fontSize: '1.1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                Save Changes
-              </button>
-
-              <button
-                onClick={() => {
-                  const savedConfig = localStorage.getItem('adBannerConfig');
-                  console.log('Current saved config:', savedConfig);
-                  if (savedConfig) {
-                    console.log('Parsed config:', JSON.parse(savedConfig));
-                  }
-                  toast.success('Check console for saved configuration');
-                }}
-                style={{
-                  background: '#10b981',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '10px',
-                  padding: '1rem 2rem',
-                  fontSize: '1.1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                Check Saved Config
-              </button>
-
-              <button
-                onClick={handleReset}
-                style={{
-                  background: '#f59e0b',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '10px',
-                  padding: '1rem 2rem',
-                  fontSize: '1.1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                Reset to Default
-              </button>
+              />
             </div>
 
-            {/* Instructions */}
-            <div style={{
-              marginTop: '3rem',
-              background: 'rgba(255, 255, 255, 0.05)',
-              padding: '2rem',
-              borderRadius: '20px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(10px)'
-            }}>
-              <h3 style={{
-                color: '#9747ff',
-                fontSize: '1.5rem',
+            {/* Font Size */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                Font Size (px):
+              </label>
+              <input
+                type="number"
+                value={bannerConfig.fontSize}
+                onChange={(e) => setBannerConfig({...bannerConfig, fontSize: e.target.value})}
+                style={{
+                  width: '100px',
+                  padding: '0.75rem',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#fff',
+                  fontSize: '1rem'
+                }}
+                min="12"
+                max="48"
+              />
+            </div>
+
+            {/* Font Weight */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                Font Weight:
+              </label>
+              <select
+                value={bannerConfig.fontWeight}
+                onChange={(e) => setBannerConfig({...bannerConfig, fontWeight: e.target.value})}
+                style={{
+                  width: '150px',
+                  padding: '0.75rem',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#fff',
+                  fontSize: '1rem'
+                }}
+              >
+                <option value="normal">Normal</option>
+                <option value="bold">Bold</option>
+                <option value="bolder">Bolder</option>
+              </select>
+            </div>
+
+            {/* Scroll Speed */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>
+                Scroll Speed (seconds):
+              </label>
+              <input
+                type="number"
+                value={bannerConfig.scrollSpeed}
+                onChange={(e) => setBannerConfig({...bannerConfig, scrollSpeed: e.target.value})}
+                style={{
+                  width: '100px',
+                  padding: '0.75rem',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: '#fff',
+                  fontSize: '1rem'
+                }}
+                min="5"
+                max="60"
+              />
+            </div>
+
+            {/* Active Status */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600' }}>
+                <input
+                  type="checkbox"
+                  checked={bannerConfig.isActive}
+                  onChange={(e) => setBannerConfig({...bannerConfig, isActive: e.target.checked})}
+                  style={{ width: '18px', height: '18px' }}
+                />
+                Banner Active
+              </label>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{
+            display: 'flex',
+            gap: '1rem',
+            justifyContent: 'center',
+            flexWrap: 'wrap'
+          }}>
+            <button
+              onClick={handlePreview}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '10px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: '#fff',
+                fontSize: '1rem',
                 fontWeight: '600',
-                margin: '0 0 1rem 0'
-              }}>
-                How to Use
-              </h3>
-              <ul style={{
-                color: '#ccc',
-                lineHeight: '1.6',
-                paddingLeft: '1.5rem'
-              }}>
-                <li>Edit the advertisement text to customize your message</li>
-                <li>Choose background colors using the color pickers</li>
-                <li>Select text color for optimal readability</li>
-                <li>Adjust font size and weight as needed</li>
-                <li>Control scroll speed (lower = faster)</li>
-                <li>Use "Show Preview" to see the banner in action</li>
-                <li>Click "Save Changes" to apply your settings</li>
-                <li>Use "Reset to Default" to restore original settings</li>
-              </ul>
-            </div>
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              {previewBanner ? 'Hide Preview' : 'Preview Banner'}
+            </button>
+
+            <button
+              onClick={handleSave}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '10px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                color: '#fff',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Save Settings
+            </button>
+
+            <button
+              onClick={handleReset}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '10px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                color: '#fff',
+                fontSize: '1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              Reset to Default
+            </button>
           </div>
         </div>
       </div>
 
-      {/* CSS Animation */}
+      {/* CSS Animation for scrolling text */}
       <style jsx>{`
         @keyframes scrollText {
-          from {
-            transform: translateX(0%);
+          0% {
+            transform: translateX(100%);
           }
-          to {
-            transform: translateX(-50%);
+          100% {
+            transform: translateX(-100%);
           }
         }
       `}</style>
